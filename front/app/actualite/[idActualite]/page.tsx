@@ -1,13 +1,32 @@
+'use client'
+
+import ModalAdresseIP from './actualite-client-component';
+import { OpenModalAdresseIP } from './actualite-client-component';
 
 
-function TextP() {
-    
-                
-                
+
+
+
+
+function TheActualiteTopic() {
     return (
-        // <a href="">
-        <div className="flex flex-col items-center" style={{backgroundColor:"#292929", borderColor:"black", borderWidth:"0.2vh", borderRadius:"5%"}}>
-                    <h2 style={{fontSize:"2vh", fontWeight:"bold", color:"white"}}>Le titre</h2>
+        <div className="flex flex-col items-center w-11/12" style={{backgroundColor:"#292929", borderColor:"black", borderWidth:"0.2vh"}}>
+                    <div>
+                        <button onClick={OpenModalAdresseIP}>
+                            <img src="" className="text-white" alt="adresse IP" />
+                        </button>
+                        <button>
+                            <img src="" className="text-white" alt="Editer" />
+                        </button>
+                        <button>
+                            <img src="" className="text-white" alt="Signaler" />
+                        </button>
+                        <button>
+                            <img src="" className="text-white" alt="Supprimer" />
+                        </button>
+                    </div>
+
+                    
                     <div className="flex flex-col gap-5">
                         <div className="flex">
                         <img src="/image/default/profil.jpg" alt="test" style={{borderRadius:"100%", height:"8vh", width:"8vh"}} />
@@ -22,24 +41,24 @@ function TextP() {
                             
     
                         </div>
+                        <img src="" className="text-white" alt="J'aime" />
                 </div>
-        // </a>
-        );
+    );
 }
 
+// function TheActualiteCom() {
+//     return (
 
-export default function Accueil() {
-    
-    
+//     );
+// }
+
+export default function Actualite() {
+
     return (
-        
-        <main className=" flex flex-col items-center w-12/12">
-            <h2 className="text-white" style={{fontSize:"3vh"}}>Accueil : Actualité</h2>
-            <section className="w-11/12">
-                
-                <TextP/>
-                
-            </section>
+        <main className="flex justify-center items-center w-12/12 flex-col">
+            <ModalAdresseIP/>
+            <h2 className="text-white" style={{fontSize:"4vh"}}>Titre de l'actualité</h2>
+            <TheActualiteTopic/>
         </main>
-        )
-    } 
+    )
+}

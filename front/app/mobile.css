@@ -1,8 +1,8 @@
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 @media only screen and (max-width: 500px) {
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
 
     html, body {
         
@@ -15,14 +15,12 @@
         width: 5vh;
     }
 
-    .liMobile {
-        list-style-type: none;
-    }
+    
 
     ul {
         display: flex;
         justify-content: center;
         justify-content: space-between;
-        color: white;
+        
     }
 }
