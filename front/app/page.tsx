@@ -5,7 +5,7 @@ function TextP() {
                 
                 
     return (
-        // <a href="">
+        <a href="/actualite/te">
         <div className="flex flex-col items-center" style={{backgroundColor:"#292929", borderColor:"black", borderWidth:"0.2vh", borderRadius:"5%"}}>
                     <h2 style={{fontSize:"2vh", fontWeight:"bold", color:"white"}}>Le titre</h2>
                     <div className="flex flex-col gap-5">
@@ -23,7 +23,7 @@ function TextP() {
     
                         </div>
                 </div>
-        // </a>
+        </a>
         );
 }
 
