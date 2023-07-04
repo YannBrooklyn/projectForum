@@ -1,0 +1,5 @@
+@media only screen and (max-width: 500px) {
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+}
