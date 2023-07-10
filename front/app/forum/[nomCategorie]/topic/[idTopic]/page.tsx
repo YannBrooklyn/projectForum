@@ -8,9 +8,9 @@ import { OpenModalSupprimer } from "./topic-client-component";
 
 export default function Topic(){
     return (
-        <main className="flex flex-col justify-center items-center">
-            <h2 className="text-white">Titre du Topic</h2>
-            <section style={{width: "90%", backgroundColor:"#292929", color:"white"}}>
+        
+        <section style={{width: "90%", backgroundColor:"#292929", color:"white"}}>
+                <h2 className="text-white">Titre du Topic</h2>
                 <TheModals/>
                 <ButtonModals/>
                 <div className="flex justify-center items-center" style={{gap:"1vh", borderWidth:"0.2vh", borderColor:"black", height:"45vh"}} >
@@ -27,7 +27,6 @@ export default function Topic(){
                 <hr/>
                 <Commentaire/>
             </section>
-        </main>
     );
 }
 

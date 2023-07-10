@@ -1,6 +1,6 @@
 export default function Categorie() {
     return (
-    <main className="flex flex-col items-center justify-center">
+    <section>
         <AutreCategorie/>
         <br/>
         <section style={{width:"90%"}}>
@@ -11,7 +11,7 @@ export default function Categorie() {
                 <a href="/forum/nomCategorie/topic/idTopic"><h4>Titre Topic</h4></a>
             </div>
         </section>
-    </main>
+    </section>
     );
 }
 

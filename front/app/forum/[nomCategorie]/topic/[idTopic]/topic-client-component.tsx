@@ -21,7 +21,8 @@ export default function TheModals(){
                         </tr>
                     </tbody>
                 </table>
-                <button className="rounded-full bg-blue-700 text-white w-5/12" onClick={CloseModalAdresseIP}>Ok</button>
+                
+                <button className="rounded-full" style={{color:"white", backgroundColor:"#3D8AFF", height:"3vh", width:"12vh"}} onClick={CloseModalAdresseIP}>Ok</button>
             </div>
         </div>
 
@@ -32,7 +33,7 @@ export default function TheModals(){
                 <h2>Edition du texte</h2>
                 
                 <textarea name="" id="textareaModalEditer" cols="30" rows="10" placeholder="Ecrivez votre texte..."></textarea>
-                <button className="rounded-full bg-blue-700 text-white w-5/12" onClick={CloseModalEditer}>Editer</button>
+                <button className="rounded-full" style={{color:"white", backgroundColor:"#3D8AFF", height:"3vh", width:"12vh"}} onClick={CloseModalEditer}>Editer</button>
             </div>
         </div>
 
@@ -42,7 +43,7 @@ export default function TheModals(){
             <div id="ModalSupprimer" style={{display:"flex", justifyContent:"center", gap:"10vh", alignItems:"center", flexDirection:"column" ,height:"50%", width:"80%", position:"fixed", backgroundColor:"#292929", color:"white"}}>
                 <h2>Supprimer ce commentaire ?</h2>
                 
-                <button className="rounded-full bg-red-700 text-white w-5/12" onClick={CloseModalSupprimer}>Supprimer</button>
+                <button className="rounded-full" style={{color:"white", backgroundColor:"#A90000", height:"3vh", width:"12vh"}} onClick={CloseModalSupprimer}>Supprimer</button>
             </div>
         </div>
 
@@ -51,9 +52,12 @@ export default function TheModals(){
         <div id="divModalBannir" style={{display:"none", justifyContent:"center", alignItems:"center",height:"100%", width:"100%", backgroundColor:"rgba(0, 0, 0, 0.598)", position:"fixed", top:"0"}}>
             <div id="ModalBannir" style={{display:"flex", justifyContent:"center", gap:"10vh", alignItems:"center", flexDirection:"column" ,height:"50%", width:"80%", position:"fixed", backgroundColor:"#292929", color:"white"}}>
             <h2>Voulez vous bannir cette utilisateur ? ?</h2>
-                <input type="radio" name="bannir" id="" value={"test"}/>
-                <input type="radio" name="bannir" id="" value={"test"}/>
-                <button className="rounded-full bg-red-700 text-white w-5/12" onClick={CloseModalBannir}>Bannir</button>
+                <input type="radio" name="bannir" id="banIP" value="test" style={{color:"white"}}/>
+                <label htmlFor="banIP">Bannir l'adresse IP</label>
+                <input type="radio" name="bannir" id="banCompte"/>
+                <label htmlFor="banCompte">Bannir le compte</label>
+                <input type="date" />
+                <button className="rounded-full" style={{color:"white", backgroundColor:"#A90000", height:"3vh", width:"12vh"}} onClick={CloseModalBannir}>Bannir</button>
             </div>
         </div>
 
@@ -63,7 +67,7 @@ export default function TheModals(){
             <div id="ModalSignaler" style={{display:"flex", justifyContent:"center", gap:"10vh", alignItems:"center", flexDirection:"column" ,height:"50%", width:"80%", position:"fixed", backgroundColor:"#292929", color:"white"}}>
             <h2>Voulez vous vraiment signaler cette utilisateur ?</h2>
                 
-                <button className="rounded-full bg-red-700 text-white w-5/12" onClick={CloseModalSignaler}>Bannir</button>
+            <button className="rounded-full" style={{color:"white", backgroundColor:"#A90000", height:"3vh", width:"12vh"}} onClick={CloseModalSignaler}>Signaler</button>
             </div>
         </div>
         </>

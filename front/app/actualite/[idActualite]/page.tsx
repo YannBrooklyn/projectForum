@@ -11,7 +11,7 @@ import { OpenModalBannir } from './actualite-client-component';
 
 function TheActualiteTopic() {
     return (
-        <div className="flex flex-col items-center w-11/12" style={{backgroundColor:"#292929", borderColor:"black", borderWidth:"0.2vh"}}>
+        <div className="flex flex-col justify-center items-center w-12/12" style={{backgroundColor:"#292929", borderColor:"black", borderWidth:"0.2vh"}}>
                     <div>
                         <button onClick={OpenModalAdresseIP}>
                             <img src="" className="text-white" alt="adresse IP" />
@@ -31,7 +31,7 @@ function TheActualiteTopic() {
                     </div>
 
                     
-                    <div className="flex flex-col gap-5">
+                    <div className="flex flex-col items-center gap-5">
                         <div className="flex">
                         <img src="/image/default/profil.jpg" alt="test" style={{borderRadius:"100%", height:"8vh", width:"8vh"}} />
                         <h5 style={{fontWeight:"bold", color:"white"}}>Yann Massoro</h5>
@@ -52,7 +52,7 @@ function TheActualiteTopic() {
 
 function TheActualiteCom() {
     return (
-        <div className="flex flex-col items-center w-11/12" style={{backgroundColor:"#292929", borderColor:"black", borderWidth:"0.2vh"}}>
+        <div className="flex flex-col items-center w-12/12" style={{backgroundColor:"#292929", borderColor:"black", borderWidth:"0.2vh"}}>
                 <div>
                     <button onClick={OpenModalAdresseIP}>
                         <img src="" className="text-white" alt="adresse IP" />
@@ -93,12 +93,12 @@ function TheActualiteCom() {
 export default function Actualite() {
 
     return (
-        <main className="flex justify-center items-center w-12/12 flex-col">
+        <section className="flex flex-col justify-center items-center w-11/12 ">
             <TheModals/>
             <h2 className="text-white" style={{fontSize:"4vh"}}>Titre de l'actualité</h2>
             <TheActualiteTopic/>
             <br/>
             <TheActualiteCom/>
-        </main>
+        </section>
     )
 }

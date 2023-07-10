@@ -17,6 +17,10 @@ export default function Forum() {
 }
 
 
+
+
+
+
 export function Shoutbox() {
     return(
         <section style={{width:"90%", height:"35vh", backgroundColor:"black"}}>

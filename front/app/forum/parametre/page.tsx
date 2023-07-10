@@ -19,19 +19,22 @@ function ComponentParametre(){
 
                 <div style={{width:"47%", display:"flex", flexDirection:"column", gap:"2vh"}}>
                     <h4>Pseudonyme</h4>
-                    <input style={{backgroundColor:"#181818"}}type="text" />
+                    <input style={{backgroundColor:"#181818", color:"white", height:"3vh", width:"25vh"}} placeholder="Choisi ton pseudo" type="text" />
                     <h4>Email</h4>
-                    <input style={{backgroundColor:"#181818"}}type="text" />
+                    <input style={{backgroundColor:"#181818", color:"white", height:"3vh", width:"25vh"}} placeholder="exemple@exemple.com" type="email" />
                 </div>
                 <div style={{width:"47%", display:"flex", flexDirection:"column", gap:"2vh"}}>
-                    <h4>Password</h4>
-                    <input style={{backgroundColor:"#181818"}}type="text" />
+                    <h4>Mot de passe</h4>
+                    <input style={{backgroundColor:"#181818", color:"white", height:"3vh", width:"25vh"}} type="password" />
+                    <h4>Mot de passe confirmation</h4>
+                    <input style={{backgroundColor:"#181818", color:"white", height:"3vh", width:"25vh"}} type="password" />
                     <h4>Photo de profil</h4>
                     <img src="/image/default/profil.jpg" alt="" />
                     <input type="file" />
                 </div>
             </div>
-            <button style={{backgroundColor:"#181818", borderRadius:"2vh", width:"25vw", height:"4vh", position:"absolute", top:"102vh"}}>Appliquer</button>
+            <button className="rounded-full" style={{background:"#181818", borderColor:"black", borderWidth:"0.1vh", borderStyle:"solid", height:"3vh", width:"12vh", color:"white"}}>Appliquer</button>
         </div>
     )
 }
+
