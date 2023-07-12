@@ -6,10 +6,10 @@ const router = express.Router();
 // Article
 
 // New Article
-router.post('/new/actualite', postController.newActu)
+router.post('/new/actualite', postController.newPost)
 // Obtenir un article
-router.get('/get/actualite/:idactualite', postController.getActu)
+router.get('/get/actualite/:idactualite', postController.getPost)
 // Obtenir tout les article
-router.get('/get/actualite/all/actu', postController.allActu)
+router.get('/get/actualite/all/actu', postController.allPost)
 
 module.exports = router

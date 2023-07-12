@@ -3,6 +3,7 @@ import { useState } from "react"
 import { useEffect } from "react"
 import { getAllActu} from "@/api/post"
 import { newActu } from "@/api/post";
+import { log } from "console";
 
 // export  function newActu({ setActus, actus}){
 //     const [show, setShow] = useState(false);
@@ -37,7 +38,7 @@ import { newActu } from "@/api/post";
 //     )
 // }
 
-export const ActuCard = ({ actuData: {}, setActus, actus}) => {
+export const ActuCard = ({ postdata: {}, setActus, actus}) => {
     return (
         <>
         <p>{actuData.title}</p>
@@ -48,53 +49,55 @@ export const ActuCard = ({ actuData: {}, setActus, actus}) => {
 
 
 export default function ContentActu() {
+
+    type Post = {
+        title: string,
+        description: string,
+        users_id: number
+    }
+
+    const [posts, setPosts] = useState([])
     
-    const [actualite, setActualite] = useState([])
-    
-    
-    useEffect(()=> {
+    const getActu = () => {
         getAllActu()
-        .then((actualite) => {
-            setActualite(actualite);
-            console.log("eeeeeee",actualite)
+        .then((res: any) => {
+            console.log(res);
+            
+           setPosts(res)
         })
         .catch((error)=>{
             console.log("coucouer ", error)
         })
+    }
+    
+    useEffect(()=> {
+        getActu();
     }, [])
-                        
-    console.log("salut" + actualite)
+
+  
     return (
         <>
-        <a href="/actualite/te">
-            <div className="flex flex-col items-center" style={{backgroundColor:"#292929", borderColor:"black", borderWidth:"0.2vh", borderRadius:"5%"}}>
-                <h2 style={{fontSize:"2vh", fontWeight:"bold", color:"white"}}>Le titre</h2>
-                <div className="flex flex-col gap-5">
-                    <div className="flex">
-                        <img src="/image/default/profil.jpg" alt="test" style={{borderRadius:"100%", height:"8vh", width:"8vh"}} />
-                        <h5 style={{fontWeight:"bold", color:"white"}}>Yann Massoro</h5>
-                        <p>{actualite}</p>
-                        {actualite.length > 0 ?
-                        actualite.map((actu) => {
-                            console.log("actu" ,actu)
-                            return(
-                                <p key={actu.idActualite}>{actu.textActualite}      </p>
-                            )
-                        }): null
-                    }
-                        
-                        <h6 style={{fontWeight:"lighter", color:"white"}}>25 Juin 2023</h6>
-                    </div>
-                    
-
-                    
-                    
-                </div>
-            </div>
-        </a>
+            {posts != undefined && posts.length > 0 ?
+                posts.map((post, index) => {
+                    return (
+                        <a key={index} href={"/actualite/" + post.id}>
+                            <div className="flex flex-col items-center" style={{backgroundColor:"#292929", borderColor:"black", borderWidth:"0.2vh", borderRadius:"5%"}}>
+                                <h2 style={{fontSize:"2vh", fontWeight:"bold", color:"white"}}>{post.titlePost}</h2>
+                                <div className="flex flex-col gap-5">
+                                    <div className="flex">
+                                        <img src="/image/default/profil.jpg" alt="test" style={{borderRadius:"100%", height:"8vh", width:"8vh"}} />
+                                        <h5 style={{fontWeight:"bold", color:"white"}}>Yann Massoro</h5>        
+                                        <h6 style={{fontWeight:"lighter", color:"white"}}>25 Juin 2023</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    )
+                }) : null
+            }
         </>
-        );
-    }
+    );
+}
 
 
 export function OpenMenuBurgerLogout(){

@@ -15,13 +15,16 @@ export default function Accueil() {
     
     return (
         
-        <main className=" flex flex-col items-center w-12/12">
-            <h2 className="text-white" style={{fontSize:"3vh"}}>Accueil : Actualité</h2>
-            <section className="w-11/12">
-                
-                <ContentActu/>
-                
+        <>
+            <br/>
+            <section style={{width:"90%"}}>
+                <div className="flex justify-center text-white" style={{height:"8vh", backgroundColor:'#181818', width:"100%", borderStyle:"solid", borderWidth:"0.2vh", borderColor:"black"}}>
+                    <h4>Theme</h4>
+                </div>
+                <div className="text-white" style={{height:"6vh", backgroundColor:'#292929', width:"100%", borderStyle:"solid", borderWidth:"0.2vh", borderColor:"black"}}>
+                    <a href="/forum/nomCategorie"><h4>Titre Categorie</h4></a>
+                </div>
             </section>
-        </main>
+        </>
         )
     } 

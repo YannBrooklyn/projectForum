@@ -14,11 +14,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   coms.init({
-    dateCom: DataTypes.DATE,
-    idCom: DataTypes.INTEGER,
-    idSujet: DataTypes.INTEGER,
+    textComs: DataTypes.STRING,
+    imageComs: DataTypes.BLOB,
     idUser: DataTypes.INTEGER,
-    textCom: DataTypes.STRING
+    idCategorie: DataTypes.INTEGER,
+    idPost: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'coms',

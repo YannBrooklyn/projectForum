@@ -4,7 +4,6 @@ const router = express.Router()
 // const middleware = require ('../middleware/middleware.js')
 let jwt = require('jsonwebtoken')
 
-let thedb = require('../config/dbconfig.js')
 
 
 // Enregister un utilisateur

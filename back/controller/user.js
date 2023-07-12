@@ -1,14 +1,17 @@
-const thedb = require('../config/dbconfig')
+
 let models = require('../models')
 let asyncLib = require ('async')
 let bcryptjs = require('bcryptjs')
 let jwt = require('jsonwebtoken')
 const { where } = require('sequelize')
+const path = require('path')
+const dotenv = require('dotenv').config({path: "././.env"});
+
 
 module.exports = {
     regUser : async (req, res) => {
-        const {email, password, pseudonyme, passwordconfirm} = req.body
-        if (email == "" || pseudonyme == "" || password == "" || passwordconfirm == "") {
+        const {email, password, pseudo, passwordconfirm} = req.body
+        if (email == "" || pseudo == "" || password == "" || passwordconfirm == "") {
             return res.status(500).json ({message: "Merci de bien remplir les champs REQUIS !"});
         }
         if (password !== passwordconfirm) {
@@ -21,7 +24,7 @@ module.exports = {
             const newUser = await models.users.create({
                 email: email,
                 password: hashedpassword,
-                pseudonyme: pseudonyme
+                pseudo: pseudo
             })
             if (newUser) {
                 return res.status(200).json({message: "Vous êtes enregistrer"})
@@ -43,10 +46,11 @@ module.exports = {
             return res.status(500).json({message: "Merci de remplir les champs requis."})
         } 
 
-        const user = await models.users.findOne({ attributes: ['id', 'email', 'password'], where : {email : email} });
+        const user = await models.users.findOne({attributes: ['password', 'id', 'email', 'pseudo'], where : {email : email} });
         if (user) {
             const passwordVerify = await bcryptjs.compare(password, user.password)
             if (passwordVerify) {
+               
                 token = jwt.sign({id : user.id}, process.env.JSECRET);
                 
                 return res.status(200).json({token: token});
@@ -65,14 +69,14 @@ module.exports = {
 
     ediUser : async (req, res) => {
         const idUser = req.params.iduser
-        const {pseudonyme, email} = req.body
-        if (pseudonyme == "" || email == "") {
+        const {pseudo, email} = req.body
+        if (pseudo == "" || email == "") {
             return res.status(500).json({message: "Merci de remplir les champs requis."})
         }
-        const user = await models.users.findOne({attributes: ['pseudonyme', 'email'], where: {id: idUser} })
-        await user.update({ attributes: ['pseudonyme', 'email'],
+        const user = await models.users.findOne({attributes: ['pseudo', 'email'], where: {id: idUser} })
+        await user.update({ attributes: ['pseudo', 'email'],
             id: parseInt(idUser),
-            pseudonyme: pseudonyme ? pseudonyme : user.pseudonyme,
+            pseudo: pseudo ? pseudo : user.pseudo,
             email: email ? email : user.email,
         }).then(() => {
             return res.status(200).json({ message: "Utilisateur modifié" + user})
@@ -103,7 +107,7 @@ module.exports = {
             return res.status(400).json({message: "vous n'etes pas connecté"})
         }
 
-        await models.users.findOne({attributes: ['pseudonyme'], where: {id: idUser.id}})
+        await models.users.findOne({attributes: ['pseudo'], where: {id: idUser.id}})
         .then((user) => {
             return res.status(200).json({user: user})
         }).catch((error)=> {
@@ -114,13 +118,12 @@ module.exports = {
     },
 
     allUser : async (req, res) => {
-        await models.users.findAll({attributes: ['pseudonyme']})
+        await models.users.findAll({attributes: ['pseudo']})
         .then((users)=> {
             return res.status(200).json({users: users})
         })
         .catch((error)=> {
-            return res.status(400).json({message: "erreur "+ error})
-            
+            return res.status(400).json({message: "erreur "+ error}) 
         })
     }
 }
@@ -157,7 +160,7 @@ module.exports = {
 //     logUser : (req, res) => {
 //         let email = req.body.email
 //         let password = req.body.password
-//         let pseudonyme = req.body.pseudonyme
+//         let pseudo = req.body.pseudo
 
 //         asyncLib.waterfall([
 //             (done) => {
@@ -182,7 +185,7 @@ module.exports = {
 
 //                         (done) => {
 //                             models.users.create({
-//                                 pseudonyme : pseudonyme,
+//                                 pseudo : pseudo,
 //                                 email : email,
 //                                 password : password,
 //                             })

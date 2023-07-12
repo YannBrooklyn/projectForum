@@ -14,10 +14,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   likescoms.init({
+    idUser: DataTypes.INTEGER,
     idCom: DataTypes.INTEGER,
-    idLikeCom: DataTypes.INTEGER,
-    idSujet: DataTypes.INTEGER,
-    idUser: DataTypes.INTEGER
+    idPost: DataTypes.INTEGER,
+    idCategorie: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'likescoms',

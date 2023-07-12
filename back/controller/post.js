@@ -2,16 +2,16 @@ const models = require('../models');
 let jwt = require('jsonwebtoken')
 
 module.exports = {
-    newActu: async (req , res) => {
+    newPost: async (req , res) => {
         const {title, text} = req.body
         const idUser = jwt.decode(req.headers.authorization)
         if (title == "" || text == "") {
             return res.status(500).json({message: "Merci de bien vouloir remplir TOUT LES CHAMPS !"})
         }
 
-        const newPost = await models.actualites.create({attributes: ['titleActualite', 'textActualite', 'idUser'],
-            titleActualite: title,
-            textActualite: text,
+        const newPost = await models.posts.create({attributes: ['titlePost', 'textPost'],
+            titlePost: title,
+            textPost: text,
             idUser: parseInt(idUser.id)
         })
         if (newPost) {
@@ -21,7 +21,7 @@ module.exports = {
         }
     },
 
-    getActu : async (req, res) => {
+    getPost: async (req, res) => {
         const idActualite = req.params.idactualite
         await models.actualites.findOne({ attributes:['idActualite', 'titleActualite', 'textActualite', 'idUser'], where:{idActualite: idActualite}})
        .then((actualite)=> {
@@ -31,13 +31,14 @@ module.exports = {
        }) 
     },
 
-    allActu : async (req, res) => {
+    allPost : async (req, res) => {
 
-        await models.actualites.findAll({ attributes:['idActualite', 'titleActualite', 'textActualite', 'idUser']})
-        .then((actualite) => {
+        await models.posts.findAll()
+        .then((actualite) => { 
             return res.status(200).json({post: actualite})
 
-        }).catch((error) =>{
+        })
+        .catch((error) =>{
             return res.status(400).json({message:"Actualite pas trouvé " + error})
         })
     }
