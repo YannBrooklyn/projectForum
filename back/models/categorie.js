@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      models.categorie.hasMany(models.posts, {foreignKey: "idCategorie", onDelete: "cascade"})
+      models.categorie.hasMany(models.coms, {foreignKey: "idCategorie", onDelete: "cascade"})
+      models.categorie.hasMany(models.likesposts, {foreignKey: "idCategorie", onDelete: "cascade"})
+      models.categorie.hasMany(models.likescoms, {foreignKey: "idCategorie", onDelete: "cascade"})
     }
   }
   categorie.init({

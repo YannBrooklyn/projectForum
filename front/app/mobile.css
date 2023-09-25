@@ -1,26 +1,39 @@
 
-@media only screen and (max-width: 500px) {
     @tailwind base;
     @tailwind components;
     @tailwind utilities;
 
-    html, body {
+    html {
         
         height: 100%;
         width: 100%;
+    }
+
+    body {
+        height: 100%;
+        max-height: auto;
+        width: 100%;
+        background-color: #2F2F2F;
     }
 
     #imgBurger {
         height: 5vh;
         width: 5vh;
     }
+    
+    
+
+
 
     
 
     ul {
+        
         display: flex;
         justify-content: center;
         justify-content: space-between;
         
     }
-}
+
+    
+

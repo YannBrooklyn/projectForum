@@ -11,6 +11,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      models.coms.belongsTo(models.users, {
+        foreignKey:'idUser'
+      }),
+      models.coms.belongsTo(models.posts, {
+        foreignKey: 'idPost'
+      })
+      models.coms.hasMany(models.likescoms, {foreignKey: "idCom", onDelete: "cascade"})
     }
   }
   coms.init({

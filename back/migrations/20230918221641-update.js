@@ -1,0 +1,20 @@
+'use strict';
+
+/** @type {import('sequelize-cli').Migration} */
+module.exports = {
+  async up (queryInterface, Sequelize) {
+    await queryInterface.addColumn('settings', "nameForum", {
+      allowNull: true,
+      type: Sequelize.STRING
+    })
+    await queryInterface.addColumn('settings', 'backgroundColorThird', {
+      allowNull: false,
+      type: Sequelize.STRING
+    })
+  },
+
+  async down (queryInterface, Sequelize) {
+    await queryInterface.removeColumn('settings', 'nameForum')
+    await queryInterface.removeColumn('settings', 'backgroundColorThird')
+  }
+};

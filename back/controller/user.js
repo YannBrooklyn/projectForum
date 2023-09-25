@@ -6,16 +6,35 @@ let jwt = require('jsonwebtoken')
 const { where } = require('sequelize')
 const path = require('path')
 const dotenv = require('dotenv').config({path: "././.env"});
+const multer = require('multer')
+const upload = multer({ dest: 'static/images/' })
+const regexPseudo = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]){5,15}$/; 
+const regexPassword = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]){6,255}$/; 
+const regexEmail = /^([-._A-Za-z\d]){3,100}@([a-zA-Z]){3,15}\.([a-zA-Z]){2,15}$/
+const regexPseudoUpdate = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]){0,15}$/; 
+const regexPasswordUpdate = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]){0,255}$/; 
+const regexEmailUpdate = /^([-._A-Za-z\d]){0,100}@([a-zA-Z]){0,15}\.([a-zA-Z]){0,15}$/
+const regexRoleUpdate = /^([0-9]{1,})$/
+const regexImage = /^([a-zA-Z_.\d\s-]{1,25})\.(?:jpg|gif|png|bmp)$/
+const regexID = /^([0-9]){1,}$/
+
 
 
 module.exports = {
     regUser : async (req, res) => {
-        const {email, password, pseudo, passwordconfirm} = req.body
-        if (email == "" || pseudo == "" || password == "" || passwordconfirm == "") {
-            return res.status(500).json ({message: "Merci de bien remplir les champs REQUIS !"});
+        const {email, password, pseudo, confirmPassword} = req.body
+        console.log(req.body)
+
+        if (!regexPassword.test(password) || !regexEmail.test(email) || !regexPseudo.test(pseudo)) {
+            return res.status(400).json({message: "Merci de remplir les champs avec des caractères VALIDE !"})
         }
-        if (password !== passwordconfirm) {
-            return res.status(500).json ({message: "Vous n'avez pas mit le même mot de passe !"});
+
+        if ( confirmPassword == " " || password == " " || email == " " || pseudo == " " || password === null || password === undefined || confirmPassword === null || confirmPassword === undefined ||email == "" || pseudo == "" || password == "") {
+            return res.status(400).json ({message: "Merci de bien remplir les champs REQUIS !"});
+        }
+
+        if (confirmPassword !== password) {
+            return res.status(400).json({message: "Les mots de passe ne sont pas les même."})
         }
         const user = await models.users.findOne ({attributes: ['email'], where : {email : email}});
         if (user === null) {
@@ -29,21 +48,25 @@ module.exports = {
             if (newUser) {
                 return res.status(200).json({message: "Vous êtes enregistrer"})
             } else {
-                return res.status(503).json({message: "erreur général, veuillez réesayer ultérieurement."})
+                return res.status(500).json({message: "erreur général, veuillez réesayer ultérieurement."})
             }
         } 
         else if (user !== null) {
-            return res.status(500).json({message: "Email déjà utilisé."})
+            return res.status(400).json({message: "Email déjà utilisé."})
         } else {
-            return res.status(503).json({message: "erreur général, veuillez réesayer ultérieurement."})
+            return res.status(500).json({message: "erreur général, veuillez réesayer ultérieurement."})
         }
     },
 
     logUser : async (req, res) => {
         const {email, password} = req.body
 
-        if (email == "" || password == "") {
-            return res.status(500).json({message: "Merci de remplir les champs requis."})
+        if (!regexEmail.test(email) || !regexPassword.test(password)) {
+            return res.status(400).json({message: "Merci de remplir les champs avec des caractères valide !"})
+        }
+
+        if (email == "" || password == "" || email == " " || password == " " || email === null || email === undefined || password === undefined || password === null) {
+            return res.status(400).json({message: "Merci de remplir les champs requis."})
         } 
 
         const user = await models.users.findOne({attributes: ['password', 'id', 'email', 'pseudo'], where : {email : email} });
@@ -56,38 +79,292 @@ module.exports = {
                 return res.status(200).json({token: token});
             } 
             else if (!passwordVerify) {
-                return res.status(400).json({error: "Wrong Password"});
+                return res.status(400).json({message: "Mot de passe incorrect."});
             } else {
-                return res.status(503).json({ error: "Erreur général, veuillez réesayez ultérieurement"})
+                return res.status(500).json({ message: "Erreur général, veuillez réesayez ultérieurement"})
             }
         } else if (!user) {
-            return res.status(404).json({error: "Cette utilisateur existe pas"})
+            return res.status(404).json({message: "Cette utilisateur existe pas"})
         } else {
-            return res.status(503).json({ error: "Erreur général, veuillez réesayez ultérieurement"})
+            return res.status(500).json({ message: "Erreur général, veuillez réesayez ultérieurement"})
         }
-    }, 
+    },
 
-    ediUser : async (req, res) => {
-        const idUser = req.params.iduser
-        const {pseudo, email} = req.body
-        if (pseudo == "" || email == "") {
-            return res.status(500).json({message: "Merci de remplir les champs requis."})
+    editUser : async (req, res)=>{
+        const idUser = req.params.idUser
+        
+        const {pseudo, email, password, role} = req.body
+        console.log(req.body)
+        
+        if (!regexID.test(idUser)) {
+            return res.status(400).json({message: "Erreur dans l'ID User"})
         }
-        const user = await models.users.findOne({attributes: ['pseudo', 'email'], where: {id: idUser} })
-        await user.update({ attributes: ['pseudo', 'email'],
-            id: parseInt(idUser),
-            pseudo: pseudo ? pseudo : user.pseudo,
-            email: email ? email : user.email,
+
+        function emailRegex () {
+            if (email !== "") {
+                return regexEmailUpdate.test(email)
+            } else {
+                return email
+            }
+        }
+
+        function regexRole() {
+            if (role == "0" || role === "" || role === "NaN") {
+                return role
+            } else {
+                return regexRoleUpdate.test(role)
+            }
+        }
+        console.log(emailRegex() , !regexPasswordUpdate.test(password) , !regexPseudoUpdate.test(pseudo) ,regexRole())
+        if (emailRegex() === false ||  !regexPasswordUpdate.test(password) || !regexPseudoUpdate.test(pseudo) || regexRole() === false) {
+            return res.status(400).json({message: "Merci de mettre des caractères valide."})
+        }
+
+    console.log(req.files)
+
+        if (req.files.avatar) {
+            if (!regexImage.test(req.files.avatar[0].originalname)) {
+                return res.status(400).json({message: "Merci de mettre des caractères valide pour l'avatar, nous acceptons seulement les images jpg png gif bmp."})
+            }
+        }
+
+        if (req.files.banniere) {
+            if (!regexImage.test(req.files.banniere[0].originalname)) {
+                return res.status(400).json({message: "Merci de mettre des caractères valide pour la bannière, nous acceptons seulement les images jpg png gif bmp."})
+            }
+        }
+
+        const user = await models.users.findOne({where: {id: idUser}})
+        
+
+        function avatar() {
+            if (req.files.avatar) {
+                return req.files.avatar[0].filename
+            } else {
+                return null
+            }
+        }
+
+        function banniere() {
+            if (req.files.banniere) {
+                return req.files.banniere[0].filename
+            } else {
+                return null
+            }
+        }
+        console.log("test", avatar())
+
+        function hashingPassword() {
+            if (password)  {
+                const salt = bcryptjs.genSaltSync(8)
+                const hashedpassword = bcryptjs.hashSync(password, salt)
+                return hashedpassword
+            } else {
+                return user.password
+            }
+        }
+
+        
+        await user.update({
+            pseudo: pseudo !== " " && pseudo !== "" && pseudo !== undefined && pseudo !== null ? pseudo : user.pseudo,
+            email: email !== " " && email !== "" && email !== undefined && email !== null ? email : user.email,
+            password: password !== " " && password !== "" && password !== undefined && password !== null ? hashingPassword() : user.password,
+            avatar: avatar() !== " " && avatar() !== "" && avatar() !== "" && avatar() !== undefined && avatar() !== null ? avatar() : user.avatar,
+            banner: banniere() !== " " && banniere() !== ""  && banniere() !== undefined && banniere() !== null ? banniere() : user.banner,
+            idRole: role !== undefined && role !== 0 &&  role !== "NaN" && role !== "" && role !== " " && role !== null ? role : user.idRole
+        })
+        .then(()=> {
+            return res.status(200).json({message: "Utilisateur modifié avec succès"})
+        })
+        .catch((err)=>{
+            return res.status(500).json({message: "Une erreur est survenu"})
+        })
+    },
+
+    ediConfidUser : async (req, res) => {
+        const idUser = req.params.iduser
+        
+        const {pseudo, email, password, confirmPassword} = req.body
+
+        function emailRegex () {
+            if (email !== "") {
+                return !regexEmailUpdate.test(email)
+            } else {
+                return email
+            }
+        }
+
+        if (!regexID.test(idUser)) {
+            return res.status(400).json({message: "Vous n'êtes pas connecté."})
+        }
+
+        if (!regexPasswordUpdate.test(password) || emailRegex() === false || !regexPseudoUpdate.test(pseudo)) {
+            return res.status(400).json({message: "Merci de remplir les champs avec des caractères VALIDE !"})
+        }
+
+        if ( confirmPassword == " " || password == " " || email == " " || pseudo == " " || password === null || password === undefined || confirmPassword === null || confirmPassword === undefined ) {
+            return res.status(400).json ({message: "Merci de bien remplir les champs REQUIS !"});
+        }
+
+        if (confirmPassword !== password) {
+            return res.status(400).json({message: "Les mots de passe ne sont pas les même."})
+        }
+        console.log(req.body)
+        const user = await models.users.findOne({where: {id: idUser} })
+        
+
+        function hashingPassword() {
+            if (password === confirmPassword)  {
+                const salt = bcryptjs.genSaltSync(8)
+                const hashedpassword = bcryptjs.hashSync(password, salt)
+                return hashedpassword
+            } else {
+                return user.password
+            }
+        }
+
+
+        await user.update({
+            
+            pseudo: pseudo !== " " && pseudo !== "" && pseudo !== undefined &&  pseudo !== null ? pseudo : user.pseudo,
+            email: email !== " " && email !== "" &&  email !== undefined &&  email !== null ? email : user.email,
+            password: password !== " " && password !== "" &&  password !== undefined &&  password !== null ? hashingPassword() : user.password 
+            
+            
         }).then(() => {
-            return res.status(200).json({ message: "Utilisateur modifié" + user})
+            return res.status(200).json({ message: "Utilisateur modifié"})
         }).catch((error) => {
             console.log(error)
-            return res.status(400).json({message: "erreur" + error})
+            return res.status(500).json({message: "Une erreur est survenu"})
+        })
+    },
+
+    ediPPUser: async (req, res) => {
+        const idUser = req.params.iduser
+        if (!regexID.test(idUser)) {
+            return res.status(400).json({message: "Une erreur est survenu"})
+        }
+        console.log(req.file)
+        if (req.file) {
+            if (!regexImage.test(req.file.originalname)) {
+                return res.status(400).json({message: "Merci de mettre des caractères valide pour l'avatar, nous acceptons seulement les images jpg png gif bmp."})
+            }
+        }
+        console.log(req.file)
+        function avatar() {
+            if (req.file) {
+                return req.file.filename
+            } else {
+                return null
+            }
+        }
+        const user  = await models.users.findOne({where: {id: idUser}})
+        await user.update({
+            avatar: avatar() !== " " && avatar() !== "" && avatar() !== "" && avatar() !== undefined && avatar() !== null ? avatar() : user.avatar
+        })
+        .then (()=> {
+            return res.status(200).json({ message: "Avatar modifié avec succès"})
+        })
+        .catch((error)=>{
+            console.log(error)
+            return res.status(500).json({message: "Une erreur est survenu."})
+        })
+    },
+
+    onlineUser : async (req, res) =>{
+        const idUser = req.params.idUser
+        const statsUser = req.body.statsUser
+        if (!regexID.test(idUser)) {
+            return res.status(400).json({message: "Vous n'êtes pas connecté."})
+        }
+        
+        if (!regexID.test(statsUser)) {
+            console.log('wssssssss')
+            return res.status(400).json({message: "Erreur de paramètre"})
+        }
+
+        if (statsUser != 1 && statsUser != 0) {
+            console.log('rrrrrrrr958')
+            console.log(statsUser)
+            return res.status(400).json({message: "Erreur de paramètre"})
+        }
+
+        const user  = await models.users.findOne({where: {id: idUser}})
+        await user.update({
+            online: statsUser !== " " && statsUser !== ""  && statsUser !== undefined && statsUser !== null ?  statsUser : user.online
+        })
+        .then (()=> {
+            return res.status(200).json({ message: "Status modifié avec succès"})
+        })
+        .catch((error)=>{
+            console.log(error)
+            return res.status(500).json({message: "Une erreur est survenu."})
+        })
+    },
+
+    offlineAllUsers : async (req, res) =>{
+        
+
+        const user = await models.users.findOne({where: {online: 1}})
+
+        if (user !== null) {
+
+            await user.update({
+                online: 0
+            })
+            .then (()=> {
+                return res.status(200).json({ message: "Status modifié avec succès"})
+            })
+            .catch((error)=>{
+                console.log(error)
+                return res.status(500).json({message: "Une erreur est survenu."})
+            })
+        }
+    },
+
+    ediBNUser : async (req, res) => {
+        const idUser = req.params.iduser
+        if (!regexID.test(idUser)) {
+            return res.status(400).json({message: "Vous n'êtes pas connecté."})
+        }
+
+        if (req.file) {
+            if (!regexImage.test(req.file.originalname)) {
+                return res.status(400).json({message: "Merci de mettre des caractères valide pour la bannière, nous acceptons seulement les images jpg png gif bmp."})
+            }
+        }
+
+        console.log(req.file)
+        function banniere() {
+            if (req.file) {
+                return req.file.filename
+            } else {
+                return null
+            }
+        }
+        const user  = await models.users.findOne({where: {id: idUser}})
+        await user.update({
+            banner: banniere() !== " " && banniere() !== ""  && banniere() !== undefined && banniere() !== null ? banniere() : user.banner
+        })
+        .then (()=> {
+            return res.status(200).json({ message: "Bannière modifié avec succès"})
+        })
+        .catch((error)=>{
+            console.log(error)
+            return res.status(500).json({message: "Une erreur est survenu."})
         })
     },
 
     delUser : async (req, res) => {
+        console.log('oooo')
         const idUser = req.params.iduser;
+
+        
+
+        if (!regexID.test(idUser)) {
+            return res.status(400).json({message: "Erreur dans l'ID User"})
+        }
+        console.log(idUser)
         const user = await models.users.findOne({ attributes: ['id'], where: {id: idUser} });
         if (user) {
             await models.users.destroy({
@@ -95,35 +372,87 @@ module.exports = {
             }).then(()=> {
                 return res.status(200).json({ message: 'utilisateur supprimé'})
             }).catch((error) => {
-                return res.status(400).json({message: "erreur lors de la suppression " + error})
+                return res.status(500).json({message: "erreur lors de la suppression " + error})
             })
         }
     },
 
     getUser : async (req, res) => {
-        const authorization = req.headers.authorization
-        const idUser = jwt.decode(authorization)
+        // const authorization = req.headers.authorization
+        // const idUser = jwt.decode(authorization)
+        console.log("sa paszzzzzzzzzseeeee ici")
+
+        const idUser = req.params.idUser
+
+        if (!regexID.test(idUser)) {
+            return res.status(400).json({message: "Vous n'êtes pas connecté."})
+        }
+
         if (!idUser || idUser == null || idUser == undefined) {
             return res.status(400).json({message: "vous n'etes pas connecté"})
         }
-
-        await models.users.findOne({attributes: ['pseudo'], where: {id: idUser.id}})
+        await models.users.findOne({
+            where: {id: idUser},
+            include: [{
+                model: models.posts,
+                required: false
+            },
+            {
+               model: models.coms,
+               required: false
+            },
+            {
+                model: models.roles,
+                required: false
+            },
+            {
+                model: models.likesposts,
+                required: false
+            },
+            {
+                model: models.likescoms,
+                required: false
+            }]
+        })
         .then((user) => {
+            
             return res.status(200).json({user: user})
         }).catch((error)=> {
-            console.log(idUser)
-            return res.status(400).json({message: "utilisateur pas trouvé "+ error})
+            console.log('hhhhhhhhhhhhh',idUser)
+            return res.status(500).json({message: "utilisateur pas trouvé "+ error})
         }) 
 
     },
 
     allUser : async (req, res) => {
-        await models.users.findAll({attributes: ['pseudo']})
+        console.log('wsssshhh')
+        await models.users.findAll({
+            include: [{
+                model: models.posts,
+                required: false
+            },
+            {
+                model: models.coms,
+                required: false
+            },
+            {
+                model: models.roles,
+                required: false
+            },
+            {
+                model: models.likesposts,
+                required: false
+            },
+            {
+                model: models.likescoms,
+                required: false
+            }]
+        })
         .then((users)=> {
             return res.status(200).json({users: users})
         })
         .catch((error)=> {
-            return res.status(400).json({message: "erreur "+ error}) 
+            return res.status(500).json({message: "erreur "+ error}) 
         })
     }
 }
