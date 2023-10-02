@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react"
 import { newPost } from "@/api/post";
 import { getSet } from '@/api/setting';
+import { getCateg } from '@/api/categ';
 
 
 
@@ -20,7 +21,7 @@ export function ContentNewTopic(){
     const regexId = /^([0-9]){1,}$/
     const regexToken = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]){2,}$/; 
     const paramsCategorie = useParams().nameCategorie
-
+    const [idTheme, setIdTheme] = useState('')
 
     const [generalTextColor, setGeneralTextColor] = useState('')
     const [navbarTextColor, setNavbarTextColor] = useState('')
@@ -40,6 +41,25 @@ export function ContentNewTopic(){
     const [backgroundColorUpdateButton, setBackgroundColorUpdateButton] = useState('')
     const [backgroundColorCardMember, setBackgroundColorCardMember] = useState('')
     const [backgroundColorZoneText, setBackgroundColorZoneText] = useState('')
+    
+    async function getACategorie(){
+        await getCateg(paramsCategorie)
+        .then((res)=>{
+            if (res.status === 200) {
+
+                console.log(res.data.categorie.idTheme)
+                setIdTheme(res.data.categorie.idTheme)
+            } else {
+                return Promise.reject(res)
+            }
+
+        })
+        .catch((error)=>{
+            console.log(error)
+        })
+    }
+
+
 
     async function designSetting(){
 
@@ -72,6 +92,7 @@ export function ContentNewTopic(){
    
         useEffect(()=>{
             designSetting()
+            getACategorie()
         },[])
 
 
@@ -89,13 +110,14 @@ export function ContentNewTopic(){
             text: text,
             idUser: idUser,
             idCategorie: idCategorie,
-            token: token
+            token: token,
+            idTheme: idTheme
         }
 
         
         console.log('tt', data)
         console.log(regexTextTopic.test(text), regexTitleTopic.test(title), regexId.test(idCategorie) , regexId.test(idUser) ,idUser )
-        !regexToken.test(token) || !title || title === null || regexTitleTopic.test(title) === false || title === undefined  || regexTextTopic.test(text) === false || !text || text === null || text === undefined || regexId.test(idCategorie) === false || regexId.test(idUser) === false ?
+        !regexToken.test(token) || !title || title === null || regexTitleTopic.test(title) === false || title === undefined  || regexTextTopic.test(text) === false || !text || text === null || text === undefined || regexId.test(idCategorie) === false || regexId.test(idTheme) === false || regexId.test(idUser) === false ?
         setErrorMessage("Un des champs ne respect pas les conditions !") :
         await newPost(data)
         .then((data)=>{

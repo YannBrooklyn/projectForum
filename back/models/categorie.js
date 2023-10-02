@@ -15,10 +15,14 @@ module.exports = (sequelize, DataTypes) => {
       models.categorie.hasMany(models.coms, {foreignKey: "idCategorie", onDelete: "cascade"})
       models.categorie.hasMany(models.likesposts, {foreignKey: "idCategorie", onDelete: "cascade"})
       models.categorie.hasMany(models.likescoms, {foreignKey: "idCategorie", onDelete: "cascade"})
+      models.categorie.belongsTo(models.themes, {
+        foreignKey: 'idTheme'
+      })
     }
   }
   categorie.init({
-    nameCategorie: DataTypes.STRING
+    nameCategorie: DataTypes.STRING,
+    idTheme: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'categorie',

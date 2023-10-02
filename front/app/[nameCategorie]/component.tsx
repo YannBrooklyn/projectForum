@@ -1,5 +1,5 @@
 'use client'
-import { getAllActu } from "@/api/post"
+import { getAllPost } from "@/api/post"
 import { useEffect, useState, useSyncExternalStore } from "react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
@@ -10,10 +10,10 @@ export function PresPost(prop: any) {
     const [presPost, setPresPost] = useState([])
     const paramsCategorie = useParams().nameCategorie
     const getPresPost = () => {
-        getAllActu()
+        getAllPost()
         .then((res:any) => {
             setPresPost(res)
-            console.log('rorrororo' + res)
+            console.log(res)
         })
         .catch((error)=> {
             console.log("wazaaa", + error)
@@ -33,7 +33,15 @@ export function PresPost(prop: any) {
                         return(
                             
                             <a key={index} href={ paramsCategorie + "/topic/" + prepost.id}>
-                            <h3 className="w-12/12 border-solid border border-black h-12" style={{color:prop.textColor, backgroundColor:prop.backgroundColorCategorie}}>{prepost.titlePost}</h3>
+                                <div  className="w-12/12 border-solid border border-black h-12">
+
+                                    <h3 style={{color:prop.textColor, backgroundColor:prop.backgroundColorCategorie}}>{prepost.titlePost}</h3>
+                                    <div className="flex justify-around">
+
+                                    <h5 className="text-xs">De : {prepost.user.pseudo}</h5>
+                                    <h5 className="text-xs">Réponse : {prepost.coms.length}</h5>
+                                    </div>
+                                </div>
                             </a>
                         )
                     }

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react"
-import ContentActu, { Categorie } from "./client-component"
+import ContentActu, { Categorie, Theme } from "./client-component"
 import { getSet } from "@/api/setting"
 
 
@@ -69,12 +69,16 @@ export default function Accueil() {
         <main className="w-12/12 flex flex-col justify-center items-center">
 
             <br/>
-            <section style={{width:"90%"}}>
-                <div className="flex justify-center text-white border-black" style={{height:"8vh", backgroundColor:backgroundColorSecond, width:"100%", borderStyle:"solid", borderWidth:"0.2vh"}}>
+            <section style={{width:"90%", display:"flex", flexDirection:"column", gap:"5vh"}}>
+
+                <Theme textColor={generalTextColor} backgroundColor={backgroundColorCategorie} backgroundColorSecond={backgroundColorSecond}/>
+
+                {/* <div className="flex justify-center text-white border-black" style={{height:"8vh", backgroundColor:backgroundColorSecond, width:"100%", borderStyle:"solid", borderWidth:"0.2vh"}}>
                     <h4>Les Categorie</h4>
                 </div>
+
                     
-                    <Categorie textColor={generalTextColor} backgroundColor={backgroundColorCategorie}/>
+                <Categorie textColor={generalTextColor} backgroundColor={backgroundColorCategorie}/> */}
             </section>
         </main>
         )

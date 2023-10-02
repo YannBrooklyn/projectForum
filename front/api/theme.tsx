@@ -1,32 +1,14 @@
-import { data } from 'autoprefixer'
-import axios from 'axios'
+import axios from "axios"
 
-export const getAllCateg = async () => {
-    return await axios({
-        method: 'get',
-        url: `${process.env.CXCD}/categorie/get/categorie/all/categ`
-    })
-    .then ((result) => {
-        console.log(result)
-        return result.data.categories
-    })
-    .catch((error)=> {
-        console.log(error)
-        return error
-    })
-}
-
-export const newCateg = async (data: any) => {
+export const newTheme = async (data: any)=>{
     return await axios ({
         method:"post",
-        url: `${process.env.CXCD}/categorie/new/categorie`,
+        url: `${process.env.CXCD}/theme/new/theme`,
         data: data
     })
-    .then((result)=> {
-        
+    .then((result)=>{
         console.log(result)
         return result
-        
     })
     .catch((error)=>{
         console.log(error)
@@ -34,10 +16,26 @@ export const newCateg = async (data: any) => {
     })
 }
 
-export const UpdateCateg = async (data: any, params: any) =>{
+export const getAllTheme = async ()=>{
+    return await axios ({
+        method:"get",
+        url: `${process.env.CXCD}/theme/get/theme/all/theme`,
+        
+    })
+    .then((result)=>{
+        console.log(result)
+        return result.data.themes
+    })
+    .catch((error)=>{
+        console.log(error)
+        return error
+    })
+}
+
+export const UpdateTheme = async (data: any, params: any) =>{
     return await axios ({
         method:"put",
-        url: `${process.env.CXCD}/categorie/edit/categorie/${params}`,
+        url: `${process.env.CXCD}/theme/edit/theme/${params}`,
         data: data
     })
     .then((res)=> {
@@ -52,11 +50,11 @@ export const UpdateCateg = async (data: any, params: any) =>{
     })
 }
 
-export const DeleteCateg = async (data: any, params: any)=>{
+export const DeleteTheme = async (data: any, params: any)=>{
     console.log("wsssssssssssssssshhhh", params)
     return await axios ({
         method:"delete",
-        url: `${process.env.CXCD}/categorie/delete/categorie/${params}`,
+        url: `${process.env.CXCD}/theme/delete/theme/${params}`,
         data: data
     })
     .then((res)=>{
@@ -69,16 +67,17 @@ export const DeleteCateg = async (data: any, params: any)=>{
     })
 }
 
-export const getCateg = async (params: any)=>{
+export const getTheme = async (params: any)=>{
     console.log("wsssssssssssssssshhhh", params)
     return await axios ({
         method:"get",
-        url: `${process.env.CXCD}/categorie/get/categorie/${params}`
+        url: `${process.env.CXCD}/theme/get/theme/${params}`
     })
     .then((res)=>{
         return res
     })
     .catch((error)=>{
         console.log(error)
+        return error
     })
 }

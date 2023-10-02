@@ -10,7 +10,7 @@ import { getPost, getPostNoParams } from "@/api/post";
 import { getSet } from "@/api/setting";
 
 export default function Topic(){
-
+    
     const idPost = useParams().idTopic
     const [post, setPost] = useState('')
     const [generalTextColor, setGeneralTextColor] = useState('')
@@ -104,7 +104,6 @@ export default function Topic(){
 
 
 export function ButtonModals(prop: any) {
-    
     const [token, setToken] = useState('')
     const [userInfo, setUserInfo] = useState({})
     const idPost = useParams().idTopic
@@ -135,8 +134,9 @@ export function ButtonModals(prop: any) {
     const [iconeUpdatePost, setIconeUpdatePost] = useState('')
 
     async function Verify() {
-        const idUser = jwt_decode.decode(localStorage.tokenUser)
+        const idUser = localStorage.tokenUser ? jwt_decode.decode(localStorage.tokenUser) : null
 
+        localStorage.tokenUser ?
         await GetUser(idUser.id)
         .then((res)=>{
             console.log("idUser", res.user.id)
@@ -144,13 +144,12 @@ export function ButtonModals(prop: any) {
         })
         .catch((error)=>{
             console.log(error)
-        })
+        }) : null
     }
 
 
     async function VerifyPost() {
-       
-        console.log(idPost)
+        
         await getPostNoParams(idPost)
         .then((res)=>{
             console.log("idUserPost", res.idUser)

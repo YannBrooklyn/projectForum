@@ -14,13 +14,17 @@ module.exports = (sequelize, DataTypes) => {
       models.likescoms.belongsTo(models.posts, {foreignKey: "idPost"})
       models.likescoms.belongsTo(models.categorie, {foreignKey: "idCategorie"})
       models.likescoms.belongsTo(models.coms, {foreignKey: "idCom"})
+      models.likescoms.belongsTo(models.themes, {
+        foreignKey: 'idTheme'
+      })
     }
   }
   likescoms.init({
     idUser: DataTypes.INTEGER,
     idCom: DataTypes.INTEGER,
     idPost: DataTypes.INTEGER,
-    idCategorie: DataTypes.INTEGER
+    idCategorie: DataTypes.INTEGER,
+    idTheme: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'likescoms',

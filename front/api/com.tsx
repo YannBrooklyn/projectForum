@@ -2,7 +2,6 @@ import axios from 'axios'
 
 
 export const newCom = async (data: any) => {
-    console.log('salut je suis nouveau ', data)
     return await axios ({
         method: 'post',
         url: `${process.env.CXCD}/com/new/com`,
@@ -12,7 +11,6 @@ export const newCom = async (data: any) => {
         return result
     })
     .catch((error)=>{
-        console.log('erreur com', error)
         return error
     })
 }
@@ -23,11 +21,10 @@ export const getAllCom = async () => {
         url: `${process.env.CXCD}/com/get/com/all/com`
     })
     .then((result)=> {
-        console.log(result)
         return result.data.coms
     })
     .catch((error)=> {
-        console.log(error)
+        return error
     })
 }
 
@@ -38,16 +35,14 @@ export const getCom = async (paramsCom: any) =>{
        
     })
     .then((result)=> {
-        console.log("cocou", result)
         return result.data.com
     })
     .catch((error)=> {
-        console.log(error)
+        return error
     })
 }
 
 export const putComs = async (data: any, paramsCom: any) => {
-    console.log(paramsCom)
     return await axios ({
         method: 'put',
         url: `${process.env.CXCD}/com/put/com/${paramsCom}`,
@@ -55,12 +50,10 @@ export const putComs = async (data: any, paramsCom: any) => {
     })
     .then((result)=>{
         
-            console.log(result)
             return result
         
     })
     .catch((error)=>{
-        console.log(error)
         return error
     })
 }
@@ -73,12 +66,10 @@ export const delComs = async (data: any, paramsCom: any) =>{
     })
     .then((result)=>{
         
-            console.log(result)
-            return result
+        return result
         
     })
     .catch((error)=> {
-        console.log(error)
         return error
     })
 }

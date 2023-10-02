@@ -10,11 +10,9 @@ export const updateSet = async (data: any, params: any) => {
         }
     })
     .then((res)=>{
-        console.log(res)
         return res
     })
     .catch((error)=>{
-        console.log(error)
         return error
     })
 }
@@ -26,11 +24,9 @@ export const getSet = async (params: any) => {
         url: `${process.env.CXCD}/setting/get/setting/${params}`
     })
     .then((res)=>{
-        console.log(res)
         return res
     })
     .catch((error)=>{
-        console.log(error)
         return error
     })
 }

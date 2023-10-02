@@ -15,6 +15,9 @@ module.exports = (sequelize, DataTypes) => {
       models.posts.hasMany(models.coms, {foreignKey: "idPost", onDelete: "cascade"})
       models.posts.hasMany(models.likesposts, {foreignKey: "idPost", onDelete: "cascade"})
       models.posts.hasMany(models.likescoms, {foreignKey: "idPost", onDelete: "cascade"})
+      models.posts.belongsTo(models.themes, {
+        foreignKey: 'idTheme'
+      })
     }
   }
   posts.init({
@@ -22,7 +25,8 @@ module.exports = (sequelize, DataTypes) => {
     titlePost: DataTypes.STRING,
     imagePost: DataTypes.BLOB,
     idUser: DataTypes.INTEGER,
-    idCategorie: DataTypes.INTEGER
+    idCategorie: DataTypes.INTEGER,
+    idTheme: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'posts',

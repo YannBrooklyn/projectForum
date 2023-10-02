@@ -7,39 +7,33 @@ import env from "dotenv"
 
 
 
-export const getAllActu = async () => {
+export const getAllPost = async () => {
     
     return await axios({
         method: 'get',
-        url: `${process.env.CXCD}/post/get/actualite/all/actu`,
+        url: `${process.env.CXCD}/post/get/all/post`,
         
     })
     .then((result)=> {
+        
         return result.data.post
     })
     .catch((error) => {
-        console.log(error);
+        return error
     })
 }
 
 export const newPost = async (data: any) => {
-    console.log("tototoooooo",data)
+    
     return await axios({
         method: 'post',
         url: `${process.env.CXCD}/post/new/post`,
         data: data,
-        
     })
-    .then((result)=> {
-        
-
-            console.log('regarde regarde', data)
-            console.log('yo', result.data)
-            return result
-        
+    .then((result)=> {       
+        return result
     })
     .catch((error) => {
-        console.log("tottototo", error)
         return error
     })
 }
@@ -47,36 +41,33 @@ export const newPost = async (data: any) => {
 export const getPost = async (data: any) => {
     const params = data.params
     
-    console.log('params', data)
     return await axios({
         method: 'get',
-        url: `${process.env.CXCD}/post/get/actualite/${params}`,
+        url: `${process.env.CXCD}/post/get/post/${params}`,
        
     })
     .then((result)=> {
-        console.log("cocou", result)
         return result.data.post
     })
     .catch((error)=> {
-        console.log(error)
+        return error
     })
 }
 
 export const getPostNoParams = async (data: any) => {
     const params = data.params
     
-    console.log('params', data)
+    
     return await axios({
         method: 'get',
-        url: `${process.env.CXCD}/post/get/actualite/${data}`,
+        url: `${process.env.CXCD}/post/get/post/${data}`,
        
     })
     .then((result)=> {
-        console.log("cocou", result)
         return result.data.post
     })
     .catch((error)=> {
-        console.log(error)
+        return error
     })
 }
 
@@ -90,19 +81,16 @@ export const delPost = async (data: any, paramsTopic: any) => {
     })
     .then((result)=> {
         
-            console.log(result)
             return result
         
     })
     .catch((error)=>{
-        console.log(error)
         return error
     })
 }
 
 export const putPost = async (data: any, paramsTopic: any)=>{
     
-    console.log("teùa", paramsTopic)
     return await axios ({
         method:'put',
         url: `${process.env.CXCD}/post/put/post/${paramsTopic}`,
@@ -110,13 +98,11 @@ export const putPost = async (data: any, paramsTopic: any)=>{
     })
     .then((result)=>{
         
-            console.log(result)
-            return result
+        return result
         
         
     })
     .catch((error)=>{
-        console.log(error)
         return error
     })
 }

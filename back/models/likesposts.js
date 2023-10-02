@@ -13,12 +13,16 @@ module.exports = (sequelize, DataTypes) => {
       models.likesposts.belongsTo(models.users, {foreignKey: "idUser"})
       models.likesposts.belongsTo(models.posts, {foreignKey: "idPost"})
       models.likesposts.belongsTo(models.categorie, {foreignKey: "idCategorie"})
+      models.likesposts.belongsTo(models.themes, {
+        foreignKey: 'idTheme'
+      })
     }
   }
   likesposts.init({
     idUser: DataTypes.INTEGER,
     idCategorie: DataTypes.INTEGER,
-    idPost: DataTypes.INTEGER
+    idPost: DataTypes.INTEGER,
+    idTheme: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'likesposts',

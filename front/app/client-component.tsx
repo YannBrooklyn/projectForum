@@ -1,57 +1,13 @@
-import { use, useMemo, useState } from "react"
+import { Children, useState } from "react"
 import jwt_decode from "jsonwebtoken";
 import { useEffect } from "react"
-import { getAllActu} from "@/api/post"
-import { newActu } from "@/api/post";
-import { log } from "console";
 import { getAllCateg } from "@/api/categ";
-import { a } from "react-router-dom";
 import { getSet } from "@/api/setting";
 import { GetUser, StatutUser } from "@/api/user";
-import buttonOutlined from "@material-tailwind/react/theme/components/button/buttonOutlined";
+import { getAllTheme } from "@/api/theme";
 
-// export  function newActu({ setActus, actus}){
-//     const [show, setShow] = useState(false);
-//     const [error, setError] = useState('');
-//     const [title, setTitle] = useState('');
-//     const [description, setDescription] = useState('');
-    
-//     const handleShow = () => setShow(true);
-//     const handleClose = () => setShow(false);
 
-//     const handleCreatePost = async (evenement) =>{
-//         evenement.preventDefault();
-//         const data = {
-//             "title" : title,
-//             "description": description
-//         }
-//         await newActu(data)
-//         .then((actu)=> {
-//             setActus([...actus, actu])
-//             handleClose();
-//             setDescription('');
-//             setTitle('');
-//         })
-//         .catch((error) => {
-//             console.log(error)
-//         })
-//     }
-// <NewActus setPosts={error}/>
-    
 
-//     return(
-
-//     )
-// }
-
-// export const ActuCard = ({ postdata: {}, setActus, actus}) => {
-//     return (
-//         <>
-//             <p>{actuData.title}</p>
-//             <p>{actuData.description}</p>
-//         </>
-//     )
-// }
 
 
 
@@ -70,80 +26,83 @@ export function Categorie(prop: any) {
         })
     }
 
+    
+    
+
     useEffect(()=> {
         getCateg();
+        
     }, [])
-    console.log("ttt" + categories);
+    console.log(categories);
     
 
     return (
-        <>
-            {categories != undefined && categories.length > 0 ?
+        <>    
+            {categories !== undefined && categories.length > 0 ?
                 categories.map((categ, index) =>{
-                    return(
+                    if (prop.idTheme == categ.idTheme) {
+                    return (
                         <a key={index} href={"/" + categ.id + "/"}>
                             <div style={{color:prop.textColor, height:"6vh", backgroundColor:prop.backgroundColor, width:"100%", borderStyle:"solid", borderWidth:"0.2vh", borderColor:"black"}}>
                                 <h4 style={{color:prop.textColor}}>{categ.nameCategorie}</h4>
                             </div>
                         </a>
-                    )
-                }): null
+                    ) }
+                }) : null
             }
         </>
     );
 }
 
+export function Theme(prop: any) {
 
-// export default function ContentActu() {
-
-//     type Post = {
-//         title: string,
-//         description: string,
-//         users_id: number
-//     }
-
-//     const [posts, setPosts] = useState([])
     
-//     const getActu = () => {
-//         getAllActu()
-//         .then((res: any) => {
-//             console.log(res);
+
+    const [themes, setThemes] = useState([])
+
+    const getTheme = () => {
+        getAllTheme()
+        .then((res: any) => {
+            console.log("rrrrr",res)
+            setThemes(res)
+        })
+        .catch((error)=> {
+            console.log("yooo", error)
+        })
+    }
+    const content = <Categorie/>
+
+    useEffect(()=> {
+        
+        getTheme();
+    }, [])
+    console.log("ttt" + themes);
+    
+
+    
+            return (
+                <>
+                
+                {themes != undefined && themes.length > 0 ?
+                themes.map((theme, index) =>{
+                    return(
+
+                            <section key={index}>
+                                <h4 style={{color:prop.textColor, height:"6vh", backgroundColor:prop.backgroundColorSecond, textAlign:"center", width:"100%", borderStyle:"solid", borderWidth:"0.2vh", borderColor:"black"}}>{theme.nameTheme}</h4>
+                                <Categorie idTheme={theme.id} textColor={prop.textColor} backgroundColor={prop.backgroundColor}/>
+                            </section>
+                        
+                    )
+                }): null}
             
-//             setPosts(res)
-//         })
-//         .catch((error)=>{
-//             console.log("coucouer ", error)
-//         })
-//     }
+                </>
+            )
+            
     
-//     useEffect(()=> {
-//         getActu();
-//     }, [])
+}
 
-  
-//     return (
-//         <>
-//             {posts != undefined && posts.length > 0 ?
-//                 posts.map((post, index) => {
-//                     return (
-//                         <a key={index} href={"/actualite/" + post.id}>
-//                             <div className="flex flex-col items-center" style={{backgroundColor:"#292929", borderColor:"black", borderWidth:"0.2vh", borderRadius:"5%"}}>
-//                                 <h2 style={{fontSize:"2vh", fontWeight:"bold", color:"white"}}>{post.titlePost}</h2>
-//                                 <div className="flex flex-col gap-5">
-//                                     <div className="flex">
-//                                         <img src="/image/default/profil.jpg" alt="test" style={{borderRadius:"100%", height:"8vh", width:"8vh"}} />
-//                                         <h5 style={{fontWeight:"bold", color:"white"}}>Yann Massoro</h5>        
-//                                         <h6 style={{fontWeight:"lighter", color:"white"}}>25 Juin 2023</h6>
-//                                     </div>
-//                                 </div>
-//                             </div>
-//                         </a>
-//                     )
-//                 }) : null
-//             }
-//         </>
-//     );
-// }
+
+
 
 
 export function OpenMenuBurger(){
@@ -357,7 +316,7 @@ export function NavbarDesktopLogin(prop: any) {
     
 
     return (
-        <ul className="hidden md:flex md:gap-8">
+        <ul className="hidden md:flex md:gap-8 md:justify-around">
             <a href="/"><li className="font-bold" style={{color:prop.navbarTextColor}}>Accueil</li></a>
             {role == "1"? 
             (
@@ -376,7 +335,7 @@ export function NavbarDesktopLogout(prop: any) {
     
     
     return (
-        <ul className="hidden md:flex md:gap-8">
+        <ul className="hidden md:flex md:gap-8 md:justify-around">
             <a href="/"><li className="font-bold " style={{color:prop.navbarTextColor}}>Accueil</li></a>
             <a href="/inscription"><li className="font-bold " style={{color:prop.navbarTextColor}}>Inscription</li></a>
             <a href="/connexion"><li className="font-bold " style={{color:prop.navbarTextColor}}>Connexion</li></a>
@@ -407,7 +366,7 @@ export function NavbarLogin(prop: any){
     }
 
     return(
-        <ul className='flex gap-8 md:hidden'>
+        <ul className='flex gap-8 justify-around md:hidden'>
             <li id="iconeNavBurger" className="text-2xl" onClick={OpenMenuBurger} style={{margin:"0", padding:'0', color:prop.navbarTextColor}}>☰</li>
             <a href="/"><li className="font-bold " style={{color:prop.navbarTextColor}}>Accueil</li></a>
             <a href="/" onClick={Logout}><li className="font-bold " style={{color:prop.navbarTextColor}}>Deconnexion</li></a>
@@ -420,7 +379,7 @@ export function NavbarLogin(prop: any){
 export function NavbarLogout(prop: any) {
     return (
         <>
-                    <ul className='flex gap-8 md:hidden'>
+                    <ul className='flex gap-8 justify-around md:hidden'>
                         <li id="iconeNavBurger" className="text-2xl" onClick={OpenMenuBurger} style={{margin:"0", padding:'0', color:prop.navbarTextColor}}>☰</li>
                         <a href="/"><li className="font-bold " style={{color:prop.navbarTextColor}}>Accueil</li></a>
                         <a href="/connexion"><li className="font-bold " style={{color:prop.navbarTextColor}}>Connexion</li></a>

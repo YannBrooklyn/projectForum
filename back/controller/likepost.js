@@ -7,9 +7,8 @@ const regexId = /^([0-9]){1,}$/
 
 module.exports = {
     likePost: async (req, res)=> {
-        const {idUser, idPost, idCategorie} = req.body
-        console.log("yeeeeeehhhh", req.body)
-        if (!regexId.test(idUser) || !regexId.test(idPost) || !regexId.test(idCategorie)) {
+        const {idUser, idPost, idCategorie, idTheme} = req.body 
+        if (idUser == "0" || idPost == "0" || idCategorie == "0" || idTheme == "0" || !regexId.test(idUser) || !regexId.test(idPost) || !regexId.test(idCategorie)) {
             return res.status(400).json({message: "Erreur dans les ID"})
         }
         const verifyLikePost = await models.likesposts.findOne({
@@ -17,7 +16,7 @@ module.exports = {
         })
         if (verifyLikePost) {
             await models.likesposts.destroy({
-                where: {idPost: idPost, idUser: idUser, idCategorie: idCategorie}
+                where: {idPost: idPost, idUser: idUser, idCategorie: idCategorie, idTheme: idTheme}
             })
             .then((result)=>{
                 return res.status(200).json({message: "like retirer"})
@@ -30,7 +29,8 @@ module.exports = {
             await models.likesposts.create({
                 idUser: idUser,
                 idPost: idPost,
-                idCategorie: idCategorie
+                idCategorie: idCategorie,
+                idTheme: idTheme
             })
             .then((result)=>{
                 return res.status(200).json({message: "Liker"})
@@ -43,10 +43,10 @@ module.exports = {
     },
 
     getLikePost: async (req, res)=>{
-        const {idUser, idCategorie, idPost} = req.body
+        const {idUser, idCategorie, idPost, idTheme} = req.body
         console.log(req.body)
         console.log(!regexId.test(idUser) , !regexId.test(idPost) , !regexId.test(idCategorie))
-        if (!regexId.test(idUser) || !regexId.test(idPost) || !regexId.test(idCategorie)) {
+        if (idUser == "0" || idCategorie == "0" || idPost == "0" || idTheme == "0" || !regexId.test(idUser) || !regexId.test(idPost) || !regexId.test(idCategorie)) {
             return res.status(400).json({message: "Erreur dans les ID"})
         }
         console.log(idCategorie)
@@ -65,7 +65,7 @@ module.exports = {
     getAllLikePost: async (req, res) => {
         const idUser = req.body.idUser
 
-        if (!regexId.test(idUser)) {
+        if (!regexId.test(idUser) || idUser == "0") {
             return res.status(400).json({message: "Erreur dans les ID"})
         }
 

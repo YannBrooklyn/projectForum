@@ -9,6 +9,7 @@ import { actionLikePost, getAllLikePost, getLikePost } from "@/api/likepost";
 import { actionLikeCom, AllLikeCom, getLikeCom } from "@/api/likecom";
 import { button } from "@material-tailwind/react";
 import { getSet } from "@/api/setting";
+import { getCateg } from "@/api/categ";
 
 
 
@@ -608,8 +609,9 @@ export function ButtonModalsCom(params: any) {
     }
 
     async function Verify() {
-        const idUser = jwt_decode.decode(localStorage.tokenUser)
+        const idUser = localStorage.tokenUser ? jwt_decode.decode(localStorage.tokenUser) : null
 
+        localStorage.tokenUser ?
         await GetUser(idUser.id)
         .then((res)=>{
             console.log("idUser", res.user.id)
@@ -617,7 +619,7 @@ export function ButtonModalsCom(params: any) {
         })
         .catch((error)=>{
             console.log(error)
-        })
+        }) : null
     }
 
 
@@ -684,6 +686,7 @@ export function LikeCom(prop: any) {
             idCategorie: idCategorie,
             idUser: idUser.id,
             idCom: prop.idCom,
+            idTheme: prop.idTheme,
             token: token
         }
         regexToken.test(token) && regexID.test(idCategorie) && regexID.test(idPost) && regexID.test(prop.idCom) && regexID.test(idUser.id) ?
@@ -698,7 +701,8 @@ export function LikeCom(prop: any) {
             idCategorie: idCategorie,
             idPost: idPost,
             idCom: prop.idCom,
-            token: token
+            token: token,
+            idTheme: prop.idTheme
         }
         
         
@@ -761,10 +765,6 @@ export function Commentaire(prop: any) {
         getAllCom()
         .then((res:any)=>{
             setCom(res)
-            console.log( res)
-        })
-        .catch((error)=>{
-            console.log(error)
         })
     }
 
@@ -789,7 +789,7 @@ export function Commentaire(prop: any) {
                                     <CardCommentaire  backgroundColorCardMember={prop.backgroundColorCardMember} textColor={prop.textColor}  user={coms.user.pseudo} test={coms.idUser}/>
                                     <p style={{color:prop.textColor}} className="w-7/12">{coms.textComs}</p>
                                 </div>
-                                <LikeCom iconeLikeFalse={prop.iconeLikeFalse} iconeLikeTrue={prop.iconeLikeTrue} idCom={coms.id}/>    
+                                <LikeCom iconeLikeFalse={prop.iconeLikeFalse} iconeLikeTrue={prop.iconeLikeTrue} idCom={coms.id} idTheme={prop.idTheme}/>    
                                 <hr/>
                             </div>
                             
@@ -813,6 +813,24 @@ export function TextareaCom(prop: any) {
     const regexToken = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]){2,}$/; 
     const [succes, setSucces] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
+    const [idTheme, setIdTheme] = useState('')
+
+    async function getACategorie(){
+        await getCateg(idCategorie)
+        .then((res)=>{
+            if (res.status === 200) {
+
+                console.log(res.data.categorie.idTheme)
+                setIdTheme(res.data.categorie.idTheme)
+            } else {
+                return Promise.reject(res)
+            }
+
+        })
+        .catch((error)=>{
+            console.log(error)
+        })
+    }
 
     const handleNewCom = async (event: any) => {
         const token = localStorage.tokenUser
@@ -825,8 +843,11 @@ export function TextareaCom(prop: any) {
             idUser: idUser,
             idCategorie: idCategorie,
             idTopic: idTopic,
-            token: token
+            token: token,
+            idTheme: idTheme
         }
+
+        
 
         !regexToken.test(token) || !text || text === null || text === undefined || !regexTextTopic.test(text) || !regexID.test(idUser) || !regexID.test(idCategorie) || !regexID.test(idTopic) ?
         setErrorMessage('Merci de mettre des caractères valide, minimum 8 caractères.') :
@@ -847,10 +868,7 @@ export function TextareaCom(prop: any) {
                 } else {
                     return Promise.reject(data)
                 }
-            }
-    
-            
-            
+            }   
         })
         .catch((error)=> {
             if (!error) {
@@ -865,8 +883,11 @@ export function TextareaCom(prop: any) {
                 setSucces('')
             }
         })
-
     }
+
+    useEffect(()=>{
+        getACategorie()
+    })
 
     return(
         <form onSubmit={handleNewCom} action="" method="post">
@@ -878,6 +899,8 @@ export function TextareaCom(prop: any) {
     )
 }
 
+
+
 export function LikeTopic(getIdUser: any) {
     const idCategorie = useParams().nameCategorie
     const idPost = useParams().idTopic
@@ -885,6 +908,25 @@ export function LikeTopic(getIdUser: any) {
     const [token, setToken] = useState('')
     const regexToken = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]){2,}$/; 
     const regexID = /^([0-9]){1,}$/
+    const [idTheme, setIdTheme] = useState('')
+
+
+    async function getACategorie(){
+        await getCateg(idCategorie)
+        .then((res)=>{
+            if (res.status === 200) {
+
+                console.log(res.data.categorie.idTheme)
+                setIdTheme(res.data.categorie.idTheme)
+            } else {
+                return Promise.reject(res)
+            }
+
+        })
+        .catch((error)=>{
+            console.log(error)
+        })
+    }
 
     console.log(getIdUser.propFromParent)
     
@@ -896,7 +938,8 @@ export function LikeTopic(getIdUser: any) {
             idPost: idPost,
             idCategorie: idCategorie,
             idUser: idUser.id,
-            token: localStorage.tokenUser
+            token: localStorage.tokenUser,
+            idTheme: idTheme
         }
         regexToken.test(token) && regexID.test(idCategorie) && regexID.test(idPost) && regexID.test(idUser.id) ?
         await actionLikePost(data) : null
@@ -909,7 +952,8 @@ export function LikeTopic(getIdUser: any) {
             idUser: idUser ? idUser.id : null,
             idCategorie: idCategorie,
             idPost: idPost,
-            token: localStorage.tokenUser
+            token: localStorage.tokenUser,
+            idTheme: idTheme
         }
         
         
@@ -930,6 +974,7 @@ export function LikeTopic(getIdUser: any) {
     
     useEffect(()=>{
         FunctionVerifyLike()
+        getACategorie()
         
             const dataToken = localStorage.getItem('tokenUser')
             dataToken ?
@@ -963,7 +1008,7 @@ export function ContentTopic() {
     const [idUser, setIdUser] = useState(0)
     const [idUserForLike, setIdUserForLike] = useState('')
     const [token, setToken] = useState('')
-    
+    const idCategorie = useParams().nameCategorie
     const [generalTextColor, setGeneralTextColor] = useState('')
     const [navbarTextColor, setNavbarTextColor] = useState('')
     const [nameForumColor, setNameForumColor] = useState('')
@@ -988,6 +1033,24 @@ export function ContentTopic() {
     const [iconeLikeTrue, setIconeLikeTrue] = useState('')
     const [iconeDeletePost, setIconeDeletePost] = useState('')
     const [iconeUpdatePost, setIconeUpdatePost] = useState('')
+    const [idTheme, setIdTheme] = useState('')
+
+    async function getACategorie(){
+        await getCateg(idCategorie)
+        .then((res)=>{
+            if (res.status === 200) {
+
+                console.log(res.data.categorie.idTheme)
+                setIdTheme(res.data.categorie.idTheme)
+            } else {
+                return Promise.reject(res)
+            }
+
+        })
+        .catch((error)=>{
+            console.log(error)
+        })
+    }
 
     const data = {
         params: useParams().idTopic,
@@ -1056,6 +1119,7 @@ export function ContentTopic() {
             setToken(dataToken) : null
             designSetting()
             getThePost();
+            getACategorie()
     },[])
 
     return (
@@ -1072,7 +1136,7 @@ export function ContentTopic() {
                 <LikeTopic iconeLikeFalse={iconeLikeFalse} iconeLikeTrue={iconeLikeTrue}/>
             </div>
             <hr/>
-            <Commentaire backgroundColorThird={backgroundColorThird} backgroundColorUpdateButton={backgroundColorUpdateButton} backgroundColorDeleteButton={backgroundColorDeleteButton} backgroundColorZoneText={backgroundColorZoneText} textColor={generalTextColor} backgroundColorCardMember={backgroundColorCardMember}  iconeDeletePost={iconeDeletePost} iconeUpdatePost={iconeUpdatePost} iconeLikeFalse={iconeLikeFalse} iconeLikeTrue={iconeLikeTrue} textColorUpdateButton={textColorUpdateButton} textColorDeleteButton={textColorDeleteButton}/>
+            <Commentaire idTheme={idTheme} backgroundColorThird={backgroundColorThird} backgroundColorUpdateButton={backgroundColorUpdateButton} backgroundColorDeleteButton={backgroundColorDeleteButton} backgroundColorZoneText={backgroundColorZoneText} textColor={generalTextColor} backgroundColorCardMember={backgroundColorCardMember}  iconeDeletePost={iconeDeletePost} iconeUpdatePost={iconeUpdatePost} iconeLikeFalse={iconeLikeFalse} iconeLikeTrue={iconeLikeTrue} textColorUpdateButton={textColorUpdateButton} textColorDeleteButton={textColorDeleteButton}/>
             {token ?
                 ( 
                     <TextareaCom backgroundColorZoneText={backgroundColorZoneText} textColor={generalTextColor} textColorButton={textColorGeneralButton} backgroundColorButtonGeneral={backgroundColorGeneralButton}/>

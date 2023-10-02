@@ -9,12 +9,12 @@ module.exports = {
         const token = req.body.token
         const regexToken = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]){2,}$/; 
         
-        if (!regexToken.test(token)) {
-            return res.status(400).json({message: "Une erreur au niveau du Token"})
-        }
         if (!token) {
             console.log(token)
             return res.status(400).json({message: "Vous n'êtes pas connecté."})
+        }
+        if (!regexToken.test(token)) {
+            return res.status(400).json({message: "Une erreur au niveau du Token"})
         } else {
             jwt.verify(token, process.env.JSECRET, async (err, dec) => {
                 if (err) {

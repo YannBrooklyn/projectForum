@@ -4,10 +4,12 @@ import { useEffect, useState } from "react"
 import MobileSet from "./component/mobileSetting"
 import TabletSet from "./component/tabletSetting"
 import DesktopSet from "./component/desktopSetting"
-
+import { GetUser } from "@/api/user"
+import jwt_decode from "jsonwebtoken"
 
 export default function Settings() {
-
+    const [token, setToken] = useState('')
+    const [isAdmin , setIsAdmin] = useState({})
     const [nameForum, setNameForum] = useState('')
     const [generalTextColor, setGeneralTextColor] = useState('')
     const [navbarTextColor, setNavbarTextColor] = useState('')
@@ -75,6 +77,20 @@ export default function Settings() {
         } else {
             return regexImage.test(iconeLikeFalse.name)
         }
+    }
+
+    async function verifyAdmin() {
+        const idUser = localStorage.tokenUser ? jwt_decode.decode(localStorage.tokenUser) : null
+
+        localStorage.tokenUser ?
+        await GetUser(idUser.id)
+        .then((res)=>{
+            console.log(res.user.idRole)
+            setIsAdmin(res.user)
+        })
+        .catch((error)=>{
+            console.log(error)
+        }) : null
     }
     
 
@@ -181,30 +197,44 @@ export default function Settings() {
 
     useEffect(()=>{
         getDesign()
+        verifyAdmin()
+        const dataToken = localStorage.tokenUser
+        dataToken ?
+        setToken(dataToken) : null
+        
+        if (!localStorage.tokenUser) {
+            window.location.href="/"
+        }
     },[])
 
     return (
-        <main> 
-            <nav style={{color:navbarTextColor, backgroundColor: backgroundColorNavbar}}>
-                <ul className='flex font-bold justify-between text-xs' >
+        <main>
+            {token && isAdmin.idRole == 1 ?
+                (
+                    <>
+                        <nav style={{color:navbarTextColor, backgroundColor: backgroundColorNavbar}}>
+                            <ul className='flex font-bold justify-between text-xs' >
 
-                    <a href="/admin/membres"><li>Membres</li></a>
-                    <a href="/admin/categorie"><li>Catégories</li></a>
-                    <a href="/admin/roles"><li>Roles</li></a>
-                    <a href="/admin/settings"><li>Paramètre Forum</li></a>
-                </ul>
-            </nav>
-            <form action="" onSubmit={handleSetting} method="put" encType="multipart/form-data">
-                <MobileSet setIconeDeletePost={setIconeDeletePost} setIconeLikeFalse={setIconeLikeFalse} setIconeLikeTrue={setIconeLikeTrue} setIconeUpdatePost={setIconeUpdatePost} setNameForum={setNameForum} setGeneralTextColor={setGeneralTextColor} setNavbarTextColor={setNavbarTextColor} setNameForumColor={setNameForumColor} setTextColorGeneralButton={setTextColorGeneralButton} setTextColorDeleteButton={setTextColorDeleteButton} setTextColorUpdateButton={setTextColorUpdateButton} setTextColorCardMember={setTextColorCardMember} setBackgroundColorNavbar={setBackgroundColorNavbar} setBackgroundColorFirst={setBackgroundColorFirst} setBackgroundColorSecond={setBackgroundColorSecond} setBackgroundColorCadre={setBackgroundColorCadre} setBackgroundColorCategorie={setBackgroundColorCategorie} setBackgroundColorButtonBurger={setBackgroundColorButtonBurger} setBackgroundColorGeneralButton={setBackgroundColorGeneralButton} setBackgroundColorDeleteButton={setBackgroundColorDeleteButton} setBackgroundColorUpdateButton={setBackgroundColorUpdateButton} setBackgroundColorCardMember={setBackgroundColorCardMember} setBackgroundColorZoneText={setBackgroundColorZoneText} setBackgroundColorThird={setBackgroundColorThird} setBaliseIMGLikeFalse={setBaliseIMGLikeFalse} setBaliseIMGLikeTrue={setBaliseIMGLikeTrue} setBaliseIMGDeletePost={setBaliseIMGDeletePost} setBaliseIMGUpdatePost={setBaliseIMGUpdatePost} errorMessage={errorMessage} succes={succes} baliseIMGDeletePost={baliseIMGDeletePost} baliseIMGLikeFalse={baliseIMGLikeFalse} baliseIMGLikeTrue={baliseIMGLikeTrue} baliseIMGUpdatePost={baliseIMGUpdatePost} generalTextColor={generalTextColor} navbarTextColor={navbarTextColor} nameForumColor={nameForumColor} textColorGeneralButton={textColorGeneralButton} textColorDeleteButton={textColorDeleteButton} textColorUpdateButton={textColorUpdateButton} textColorCardMember={textColorCardMember} backgroundColorNavbar={backgroundColorNavbar} backgroundColorFirst={backgroundColorFirst} backgroundColorSecond={backgroundColorSecond} backgroundColorCadre={backgroundColorCadre} backgroundColorCategorie={backgroundColorCategorie} backgroundColorButtonBurger={backgroundColorButtonBurger} backgroundColorGeneralButton={backgroundColorGeneralButton} backgroundColorDeleteButton={backgroundColorDeleteButton} backgroundColorUpdateButton={backgroundColorUpdateButton} backgroundColorCardMember={backgroundColorCardMember} backgroundColorZoneText={backgroundColorZoneText} backgroundColorThird={backgroundColorThird} iconeLikeFalse={iconeLikeFalse} iconeLikeTrue={iconeLikeTrue} iconeDeletePost={iconeDeletePost} iconeUpdatePost={iconeUpdatePost} nameForum={nameForum}  />
-            </form>
+                                <a href="/admin/membres"><li>Membres</li></a>
+                                <a href="/admin/categorie"><li>Catégories</li></a>
+                                <a href="/admin/roles"><li>Roles</li></a>
+                                <a href="/admin/settings"><li>Paramètre Forum</li></a>
+                            </ul>
+                        </nav>
+                        <form action="" onSubmit={handleSetting} method="put" encType="multipart/form-data">
+                            <MobileSet setIconeDeletePost={setIconeDeletePost} setIconeLikeFalse={setIconeLikeFalse} setIconeLikeTrue={setIconeLikeTrue} setIconeUpdatePost={setIconeUpdatePost} setNameForum={setNameForum} setGeneralTextColor={setGeneralTextColor} setNavbarTextColor={setNavbarTextColor} setNameForumColor={setNameForumColor} setTextColorGeneralButton={setTextColorGeneralButton} setTextColorDeleteButton={setTextColorDeleteButton} setTextColorUpdateButton={setTextColorUpdateButton} setTextColorCardMember={setTextColorCardMember} setBackgroundColorNavbar={setBackgroundColorNavbar} setBackgroundColorFirst={setBackgroundColorFirst} setBackgroundColorSecond={setBackgroundColorSecond} setBackgroundColorCadre={setBackgroundColorCadre} setBackgroundColorCategorie={setBackgroundColorCategorie} setBackgroundColorButtonBurger={setBackgroundColorButtonBurger} setBackgroundColorGeneralButton={setBackgroundColorGeneralButton} setBackgroundColorDeleteButton={setBackgroundColorDeleteButton} setBackgroundColorUpdateButton={setBackgroundColorUpdateButton} setBackgroundColorCardMember={setBackgroundColorCardMember} setBackgroundColorZoneText={setBackgroundColorZoneText} setBackgroundColorThird={setBackgroundColorThird} setBaliseIMGLikeFalse={setBaliseIMGLikeFalse} setBaliseIMGLikeTrue={setBaliseIMGLikeTrue} setBaliseIMGDeletePost={setBaliseIMGDeletePost} setBaliseIMGUpdatePost={setBaliseIMGUpdatePost} errorMessage={errorMessage} succes={succes} baliseIMGDeletePost={baliseIMGDeletePost} baliseIMGLikeFalse={baliseIMGLikeFalse} baliseIMGLikeTrue={baliseIMGLikeTrue} baliseIMGUpdatePost={baliseIMGUpdatePost} generalTextColor={generalTextColor} navbarTextColor={navbarTextColor} nameForumColor={nameForumColor} textColorGeneralButton={textColorGeneralButton} textColorDeleteButton={textColorDeleteButton} textColorUpdateButton={textColorUpdateButton} textColorCardMember={textColorCardMember} backgroundColorNavbar={backgroundColorNavbar} backgroundColorFirst={backgroundColorFirst} backgroundColorSecond={backgroundColorSecond} backgroundColorCadre={backgroundColorCadre} backgroundColorCategorie={backgroundColorCategorie} backgroundColorButtonBurger={backgroundColorButtonBurger} backgroundColorGeneralButton={backgroundColorGeneralButton} backgroundColorDeleteButton={backgroundColorDeleteButton} backgroundColorUpdateButton={backgroundColorUpdateButton} backgroundColorCardMember={backgroundColorCardMember} backgroundColorZoneText={backgroundColorZoneText} backgroundColorThird={backgroundColorThird} iconeLikeFalse={iconeLikeFalse} iconeLikeTrue={iconeLikeTrue} iconeDeletePost={iconeDeletePost} iconeUpdatePost={iconeUpdatePost} nameForum={nameForum}  />
+                        </form>
 
-            <form action="" onSubmit={handleSetting} method="put" encType="multipart/form-data">
-                <TabletSet setIconeDeletePost={setIconeDeletePost} setIconeLikeFalse={setIconeLikeFalse} setIconeLikeTrue={setIconeLikeTrue} setIconeUpdatePost={setIconeUpdatePost} setNameForum={setNameForum} setGeneralTextColor={setGeneralTextColor} setNavbarTextColor={setNavbarTextColor} setNameForumColor={setNameForumColor} setTextColorGeneralButton={setTextColorGeneralButton} setTextColorDeleteButton={setTextColorDeleteButton} setTextColorUpdateButton={setTextColorUpdateButton} setTextColorCardMember={setTextColorCardMember} setBackgroundColorNavbar={setBackgroundColorNavbar} setBackgroundColorFirst={setBackgroundColorFirst} setBackgroundColorSecond={setBackgroundColorSecond} setBackgroundColorCadre={setBackgroundColorCadre} setBackgroundColorCategorie={setBackgroundColorCategorie} setBackgroundColorButtonBurger={setBackgroundColorButtonBurger} setBackgroundColorGeneralButton={setBackgroundColorGeneralButton} setBackgroundColorDeleteButton={setBackgroundColorDeleteButton} setBackgroundColorUpdateButton={setBackgroundColorUpdateButton} setBackgroundColorCardMember={setBackgroundColorCardMember} setBackgroundColorZoneText={setBackgroundColorZoneText} setBackgroundColorThird={setBackgroundColorThird} setBaliseIMGLikeFalse={setBaliseIMGLikeFalse} setBaliseIMGLikeTrue={setBaliseIMGLikeTrue} setBaliseIMGDeletePost={setBaliseIMGDeletePost} setBaliseIMGUpdatePost={setBaliseIMGUpdatePost} errorMessage={errorMessage} succes={succes} baliseIMGDeletePost={baliseIMGDeletePost} baliseIMGLikeFalse={baliseIMGLikeFalse} baliseIMGLikeTrue={baliseIMGLikeTrue} baliseIMGUpdatePost={baliseIMGUpdatePost} generalTextColor={generalTextColor} navbarTextColor={navbarTextColor} nameForumColor={nameForumColor} textColorGeneralButton={textColorGeneralButton} textColorDeleteButton={textColorDeleteButton} textColorUpdateButton={textColorUpdateButton} textColorCardMember={textColorCardMember} backgroundColorNavbar={backgroundColorNavbar} backgroundColorFirst={backgroundColorFirst} backgroundColorSecond={backgroundColorSecond} backgroundColorCadre={backgroundColorCadre} backgroundColorCategorie={backgroundColorCategorie} backgroundColorButtonBurger={backgroundColorButtonBurger} backgroundColorGeneralButton={backgroundColorGeneralButton} backgroundColorDeleteButton={backgroundColorDeleteButton} backgroundColorUpdateButton={backgroundColorUpdateButton} backgroundColorCardMember={backgroundColorCardMember} backgroundColorZoneText={backgroundColorZoneText} backgroundColorThird={backgroundColorThird} iconeLikeFalse={iconeLikeFalse} iconeLikeTrue={iconeLikeTrue} iconeDeletePost={iconeDeletePost} iconeUpdatePost={iconeUpdatePost} nameForum={nameForum}  />
-            </form>
+                        <form action="" onSubmit={handleSetting} method="put" encType="multipart/form-data">
+                            <TabletSet setIconeDeletePost={setIconeDeletePost} setIconeLikeFalse={setIconeLikeFalse} setIconeLikeTrue={setIconeLikeTrue} setIconeUpdatePost={setIconeUpdatePost} setNameForum={setNameForum} setGeneralTextColor={setGeneralTextColor} setNavbarTextColor={setNavbarTextColor} setNameForumColor={setNameForumColor} setTextColorGeneralButton={setTextColorGeneralButton} setTextColorDeleteButton={setTextColorDeleteButton} setTextColorUpdateButton={setTextColorUpdateButton} setTextColorCardMember={setTextColorCardMember} setBackgroundColorNavbar={setBackgroundColorNavbar} setBackgroundColorFirst={setBackgroundColorFirst} setBackgroundColorSecond={setBackgroundColorSecond} setBackgroundColorCadre={setBackgroundColorCadre} setBackgroundColorCategorie={setBackgroundColorCategorie} setBackgroundColorButtonBurger={setBackgroundColorButtonBurger} setBackgroundColorGeneralButton={setBackgroundColorGeneralButton} setBackgroundColorDeleteButton={setBackgroundColorDeleteButton} setBackgroundColorUpdateButton={setBackgroundColorUpdateButton} setBackgroundColorCardMember={setBackgroundColorCardMember} setBackgroundColorZoneText={setBackgroundColorZoneText} setBackgroundColorThird={setBackgroundColorThird} setBaliseIMGLikeFalse={setBaliseIMGLikeFalse} setBaliseIMGLikeTrue={setBaliseIMGLikeTrue} setBaliseIMGDeletePost={setBaliseIMGDeletePost} setBaliseIMGUpdatePost={setBaliseIMGUpdatePost} errorMessage={errorMessage} succes={succes} baliseIMGDeletePost={baliseIMGDeletePost} baliseIMGLikeFalse={baliseIMGLikeFalse} baliseIMGLikeTrue={baliseIMGLikeTrue} baliseIMGUpdatePost={baliseIMGUpdatePost} generalTextColor={generalTextColor} navbarTextColor={navbarTextColor} nameForumColor={nameForumColor} textColorGeneralButton={textColorGeneralButton} textColorDeleteButton={textColorDeleteButton} textColorUpdateButton={textColorUpdateButton} textColorCardMember={textColorCardMember} backgroundColorNavbar={backgroundColorNavbar} backgroundColorFirst={backgroundColorFirst} backgroundColorSecond={backgroundColorSecond} backgroundColorCadre={backgroundColorCadre} backgroundColorCategorie={backgroundColorCategorie} backgroundColorButtonBurger={backgroundColorButtonBurger} backgroundColorGeneralButton={backgroundColorGeneralButton} backgroundColorDeleteButton={backgroundColorDeleteButton} backgroundColorUpdateButton={backgroundColorUpdateButton} backgroundColorCardMember={backgroundColorCardMember} backgroundColorZoneText={backgroundColorZoneText} backgroundColorThird={backgroundColorThird} iconeLikeFalse={iconeLikeFalse} iconeLikeTrue={iconeLikeTrue} iconeDeletePost={iconeDeletePost} iconeUpdatePost={iconeUpdatePost} nameForum={nameForum}  />
+                        </form>
 
-            <form action="" onSubmit={handleSetting} method="put" encType="multipart/form-data">
-                <DesktopSet setIconeDeletePost={setIconeDeletePost} setIconeLikeFalse={setIconeLikeFalse} setIconeLikeTrue={setIconeLikeTrue} setIconeUpdatePost={setIconeUpdatePost} setNameForum={setNameForum} setGeneralTextColor={setGeneralTextColor} setNavbarTextColor={setNavbarTextColor} setNameForumColor={setNameForumColor} setTextColorGeneralButton={setTextColorGeneralButton} setTextColorDeleteButton={setTextColorDeleteButton} setTextColorUpdateButton={setTextColorUpdateButton} setTextColorCardMember={setTextColorCardMember} setBackgroundColorNavbar={setBackgroundColorNavbar} setBackgroundColorFirst={setBackgroundColorFirst} setBackgroundColorSecond={setBackgroundColorSecond} setBackgroundColorCadre={setBackgroundColorCadre} setBackgroundColorCategorie={setBackgroundColorCategorie} setBackgroundColorButtonBurger={setBackgroundColorButtonBurger} setBackgroundColorGeneralButton={setBackgroundColorGeneralButton} setBackgroundColorDeleteButton={setBackgroundColorDeleteButton} setBackgroundColorUpdateButton={setBackgroundColorUpdateButton} setBackgroundColorCardMember={setBackgroundColorCardMember} setBackgroundColorZoneText={setBackgroundColorZoneText} setBackgroundColorThird={setBackgroundColorThird} setBaliseIMGLikeFalse={setBaliseIMGLikeFalse} setBaliseIMGLikeTrue={setBaliseIMGLikeTrue} setBaliseIMGDeletePost={setBaliseIMGDeletePost} setBaliseIMGUpdatePost={setBaliseIMGUpdatePost} errorMessage={errorMessage} succes={succes} baliseIMGDeletePost={baliseIMGDeletePost} baliseIMGLikeFalse={baliseIMGLikeFalse} baliseIMGLikeTrue={baliseIMGLikeTrue} baliseIMGUpdatePost={baliseIMGUpdatePost} generalTextColor={generalTextColor} navbarTextColor={navbarTextColor} nameForumColor={nameForumColor} textColorGeneralButton={textColorGeneralButton} textColorDeleteButton={textColorDeleteButton} textColorUpdateButton={textColorUpdateButton} textColorCardMember={textColorCardMember} backgroundColorNavbar={backgroundColorNavbar} backgroundColorFirst={backgroundColorFirst} backgroundColorSecond={backgroundColorSecond} backgroundColorCadre={backgroundColorCadre} backgroundColorCategorie={backgroundColorCategorie} backgroundColorButtonBurger={backgroundColorButtonBurger} backgroundColorGeneralButton={backgroundColorGeneralButton} backgroundColorDeleteButton={backgroundColorDeleteButton} backgroundColorUpdateButton={backgroundColorUpdateButton} backgroundColorCardMember={backgroundColorCardMember} backgroundColorZoneText={backgroundColorZoneText} backgroundColorThird={backgroundColorThird} iconeLikeFalse={iconeLikeFalse} iconeLikeTrue={iconeLikeTrue} iconeDeletePost={iconeDeletePost} iconeUpdatePost={iconeUpdatePost} nameForum={nameForum}  />
-            </form>
+                        <form action="" onSubmit={handleSetting} method="put" encType="multipart/form-data">
+                            <DesktopSet setIconeDeletePost={setIconeDeletePost} setIconeLikeFalse={setIconeLikeFalse} setIconeLikeTrue={setIconeLikeTrue} setIconeUpdatePost={setIconeUpdatePost} setNameForum={setNameForum} setGeneralTextColor={setGeneralTextColor} setNavbarTextColor={setNavbarTextColor} setNameForumColor={setNameForumColor} setTextColorGeneralButton={setTextColorGeneralButton} setTextColorDeleteButton={setTextColorDeleteButton} setTextColorUpdateButton={setTextColorUpdateButton} setTextColorCardMember={setTextColorCardMember} setBackgroundColorNavbar={setBackgroundColorNavbar} setBackgroundColorFirst={setBackgroundColorFirst} setBackgroundColorSecond={setBackgroundColorSecond} setBackgroundColorCadre={setBackgroundColorCadre} setBackgroundColorCategorie={setBackgroundColorCategorie} setBackgroundColorButtonBurger={setBackgroundColorButtonBurger} setBackgroundColorGeneralButton={setBackgroundColorGeneralButton} setBackgroundColorDeleteButton={setBackgroundColorDeleteButton} setBackgroundColorUpdateButton={setBackgroundColorUpdateButton} setBackgroundColorCardMember={setBackgroundColorCardMember} setBackgroundColorZoneText={setBackgroundColorZoneText} setBackgroundColorThird={setBackgroundColorThird} setBaliseIMGLikeFalse={setBaliseIMGLikeFalse} setBaliseIMGLikeTrue={setBaliseIMGLikeTrue} setBaliseIMGDeletePost={setBaliseIMGDeletePost} setBaliseIMGUpdatePost={setBaliseIMGUpdatePost} errorMessage={errorMessage} succes={succes} baliseIMGDeletePost={baliseIMGDeletePost} baliseIMGLikeFalse={baliseIMGLikeFalse} baliseIMGLikeTrue={baliseIMGLikeTrue} baliseIMGUpdatePost={baliseIMGUpdatePost} generalTextColor={generalTextColor} navbarTextColor={navbarTextColor} nameForumColor={nameForumColor} textColorGeneralButton={textColorGeneralButton} textColorDeleteButton={textColorDeleteButton} textColorUpdateButton={textColorUpdateButton} textColorCardMember={textColorCardMember} backgroundColorNavbar={backgroundColorNavbar} backgroundColorFirst={backgroundColorFirst} backgroundColorSecond={backgroundColorSecond} backgroundColorCadre={backgroundColorCadre} backgroundColorCategorie={backgroundColorCategorie} backgroundColorButtonBurger={backgroundColorButtonBurger} backgroundColorGeneralButton={backgroundColorGeneralButton} backgroundColorDeleteButton={backgroundColorDeleteButton} backgroundColorUpdateButton={backgroundColorUpdateButton} backgroundColorCardMember={backgroundColorCardMember} backgroundColorZoneText={backgroundColorZoneText} backgroundColorThird={backgroundColorThird} iconeLikeFalse={iconeLikeFalse} iconeLikeTrue={iconeLikeTrue} iconeDeletePost={iconeDeletePost} iconeUpdatePost={iconeUpdatePost} nameForum={nameForum}  />
+                        </form>
+                    </>
+                ) : null
+            }
 
         </main>
     )

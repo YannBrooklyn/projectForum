@@ -58,7 +58,6 @@ export default function Banner (prop: any) {
             if (data !== undefined) {
 
                 if (data.status === 200) {
-                    console.log(data)
                     setSuccesBanner(data.data.message)
                     setErrorMessageBanner('')
                 } else {

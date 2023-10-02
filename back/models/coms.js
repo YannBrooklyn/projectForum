@@ -17,6 +17,12 @@ module.exports = (sequelize, DataTypes) => {
       models.coms.belongsTo(models.posts, {
         foreignKey: 'idPost'
       })
+      models.coms.belongsTo(models.themes, {
+        foreignKey: 'idTheme'
+      })
+      models.coms.belongsTo(models.categorie, {
+        foreignKey: 'idCategorie'
+      })
       models.coms.hasMany(models.likescoms, {foreignKey: "idCom", onDelete: "cascade"})
     }
   }
@@ -25,7 +31,8 @@ module.exports = (sequelize, DataTypes) => {
     imageComs: DataTypes.BLOB,
     idUser: DataTypes.INTEGER,
     idCategorie: DataTypes.INTEGER,
-    idPost: DataTypes.INTEGER
+    idPost: DataTypes.INTEGER,
+    idTheme: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'coms',

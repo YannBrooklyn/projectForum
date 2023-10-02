@@ -1,9 +1,7 @@
 
 let models = require('../models')
-let asyncLib = require ('async')
 let bcryptjs = require('bcryptjs')
 let jwt = require('jsonwebtoken')
-const { where } = require('sequelize')
 const path = require('path')
 const dotenv = require('dotenv').config({path: "././.env"});
 const multer = require('multer')
@@ -23,15 +21,15 @@ const regexID = /^([0-9]){1,}$/
 module.exports = {
     regUser : async (req, res) => {
         const {email, password, pseudo, confirmPassword} = req.body
-        console.log(req.body)
-
-        if (!regexPassword.test(password) || !regexEmail.test(email) || !regexPseudo.test(pseudo)) {
-            return res.status(400).json({message: "Merci de remplir les champs avec des caractères VALIDE !"})
-        }
+       
 
         if ( confirmPassword == " " || password == " " || email == " " || pseudo == " " || password === null || password === undefined || confirmPassword === null || confirmPassword === undefined ||email == "" || pseudo == "" || password == "") {
             return res.status(400).json ({message: "Merci de bien remplir les champs REQUIS !"});
         }
+        if (!regexPassword.test(password) || !regexEmail.test(email) || !regexPseudo.test(pseudo)) {
+            return res.status(400).json({message: "Merci de remplir les champs avec des caractères VALIDE !"})
+        }
+
 
         if (confirmPassword !== password) {
             return res.status(400).json({message: "Les mots de passe ne sont pas les même."})
@@ -94,7 +92,7 @@ module.exports = {
         const idUser = req.params.idUser
         
         const {pseudo, email, password, role} = req.body
-        console.log(req.body)
+    
         
         if (!regexID.test(idUser)) {
             return res.status(400).json({message: "Erreur dans l'ID User"})
@@ -115,13 +113,11 @@ module.exports = {
                 return regexRoleUpdate.test(role)
             }
         }
-        console.log(emailRegex() , !regexPasswordUpdate.test(password) , !regexPseudoUpdate.test(pseudo) ,regexRole())
         if (emailRegex() === false ||  !regexPasswordUpdate.test(password) || !regexPseudoUpdate.test(pseudo) || regexRole() === false) {
             return res.status(400).json({message: "Merci de mettre des caractères valide."})
         }
 
-    console.log(req.files)
-
+   
         if (req.files.avatar) {
             if (!regexImage.test(req.files.avatar[0].originalname)) {
                 return res.status(400).json({message: "Merci de mettre des caractères valide pour l'avatar, nous acceptons seulement les images jpg png gif bmp."})
@@ -152,7 +148,7 @@ module.exports = {
                 return null
             }
         }
-        console.log("test", avatar())
+        
 
         function hashingPassword() {
             if (password)  {
@@ -194,6 +190,14 @@ module.exports = {
             }
         }
 
+        if ( confirmPassword == " " || password == " " || email == " " || pseudo == " " || password === null || password === undefined || confirmPassword === null || confirmPassword === undefined ) {
+            return res.status(400).json ({message: "Merci de bien remplir les champs REQUIS !"});
+        }
+
+        if (confirmPassword !== password) {
+            return res.status(400).json({message: "Les mots de passe ne sont pas les même."})
+        }
+
         if (!regexID.test(idUser)) {
             return res.status(400).json({message: "Vous n'êtes pas connecté."})
         }
@@ -202,13 +206,6 @@ module.exports = {
             return res.status(400).json({message: "Merci de remplir les champs avec des caractères VALIDE !"})
         }
 
-        if ( confirmPassword == " " || password == " " || email == " " || pseudo == " " || password === null || password === undefined || confirmPassword === null || confirmPassword === undefined ) {
-            return res.status(400).json ({message: "Merci de bien remplir les champs REQUIS !"});
-        }
-
-        if (confirmPassword !== password) {
-            return res.status(400).json({message: "Les mots de passe ne sont pas les même."})
-        }
         console.log(req.body)
         const user = await models.users.findOne({where: {id: idUser} })
         
@@ -223,20 +220,24 @@ module.exports = {
             }
         }
 
+        if (user) {
 
-        await user.update({
+            await user.update({
+                
+                pseudo: pseudo !== " " && pseudo !== "" && pseudo !== undefined &&  pseudo !== null ? pseudo : user.pseudo,
+                email: email !== " " && email !== "" &&  email !== undefined &&  email !== null ? email : user.email,
+                password: password !== " " && password !== "" &&  password !== undefined &&  password !== null ? hashingPassword() : user.password 
+                
             
-            pseudo: pseudo !== " " && pseudo !== "" && pseudo !== undefined &&  pseudo !== null ? pseudo : user.pseudo,
-            email: email !== " " && email !== "" &&  email !== undefined &&  email !== null ? email : user.email,
-            password: password !== " " && password !== "" &&  password !== undefined &&  password !== null ? hashingPassword() : user.password 
-            
-            
-        }).then(() => {
-            return res.status(200).json({ message: "Utilisateur modifié"})
-        }).catch((error) => {
-            console.log(error)
-            return res.status(500).json({message: "Une erreur est survenu"})
-        })
+            }).then(() => {
+                return res.status(200).json({ message: "Utilisateur modifié"})
+            }).catch((error) => {
+                console.log(error)
+                return res.status(500).json({message: "Une erreur est survenu"})
+            })
+        } else {
+            return res.status(400).json({message: "Utilisateur non trouvé"})
+        }
     },
 
     ediPPUser: async (req, res) => {
@@ -359,12 +360,14 @@ module.exports = {
         console.log('oooo')
         const idUser = req.params.iduser;
 
+        if (idUser === undefined || idUser === null || idUser == "" || idUser == " "){
+            return res.status(400).json({message: "Aucune ID"})
+        }
         
 
         if (!regexID.test(idUser)) {
             return res.status(400).json({message: "Erreur dans l'ID User"})
         }
-        console.log(idUser)
         const user = await models.users.findOne({ attributes: ['id'], where: {id: idUser} });
         if (user) {
             await models.users.destroy({
@@ -372,24 +375,19 @@ module.exports = {
             }).then(()=> {
                 return res.status(200).json({ message: 'utilisateur supprimé'})
             }).catch((error) => {
-                return res.status(500).json({message: "erreur lors de la suppression " + error})
+                return res.status(500).json({message: "erreur lors de la suppression "})
             })
         }
     },
 
     getUser : async (req, res) => {
-        // const authorization = req.headers.authorization
-        // const idUser = jwt.decode(authorization)
-        console.log("sa paszzzzzzzzzseeeee ici")
-
         const idUser = req.params.idUser
 
-        if (!regexID.test(idUser)) {
-            return res.status(400).json({message: "Vous n'êtes pas connecté."})
-        }
-
         if (!idUser || idUser == null || idUser == undefined) {
-            return res.status(400).json({message: "vous n'etes pas connecté"})
+            return res.status(400).json({message: "Erreur dans l'ID Utilisateur"})
+        }
+        if (!regexID.test(idUser)) {
+            return res.status(400).json({message: "Caractères invalide dans l'ID"})
         }
         await models.users.findOne({
             where: {id: idUser},
@@ -415,11 +413,9 @@ module.exports = {
             }]
         })
         .then((user) => {
-            
             return res.status(200).json({user: user})
         }).catch((error)=> {
-            console.log('hhhhhhhhhhhhh',idUser)
-            return res.status(500).json({message: "utilisateur pas trouvé "+ error})
+            return res.status(500).json({message: "utilisateur pas trouvé "})
         }) 
 
     },

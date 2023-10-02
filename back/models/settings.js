@@ -38,8 +38,9 @@ module.exports = (sequelize, DataTypes) => {
     iconeLikeTrue: DataTypes.STRING,
     iconeLikeFalse: DataTypes.STRING,
     backgroundColorThird: DataTypes.STRING,
-    nameForum: DataTypes.STRING
-
+    nameForum: DataTypes.STRING,
+    activate: DataTypes.BOOLEAN,
+    nameSetting: DataTypes.STRING
 
   }, {
     sequelize,

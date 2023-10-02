@@ -6,8 +6,8 @@ const regexId = /^([0-9]){1,}$/
 
 module.exports = {
     newCom: async (req, res)=> {
-        const {text, idUser, idCategorie, idTopic} = req.body
-        if (!regexTextTopic.test(text) || !regexId.test(idUser) || !regexId.test(idCategorie) || !regexId.test(idTopic)) {
+        const {text, idUser, idCategorie, idTopic, idTheme} = req.body
+        if (!regexTextTopic.test(text) || idUser == "0" || idCategorie == "0" || idTopic == "0" || idTheme == "0" || !regexId.test(idUser) || !regexId.test(idCategorie) || !regexId.test(idTopic)) {
             return res.status(400).json({message: "Merci de mettre des caractères valide."})
         }
         console.log(req.body)
@@ -18,7 +18,8 @@ module.exports = {
                 textComs: text,
                 idUser: idUser,
                 idCategorie: idCategorie,
-                idPost: idTopic
+                idPost: idTopic,
+                idTheme: idTheme
             })
             if (newCom) {
                 return res.status(200).json({ message: text + ' a bien été crée', com: newCom})
@@ -37,6 +38,10 @@ module.exports = {
                 {
                     model: models.users,
                     required: false
+                },
+                {
+                    model: models.themes,
+                    required: false
                 }],
                 order: [
                     ['id', 'ASC']
@@ -52,7 +57,7 @@ module.exports = {
 
     delCom: async (req, res) => {
         const idCom = req.params.idCom
-        if (!regexId.test(idCom)) {
+        if (!regexId.test(idCom) || idCom == "0") {
             return res.status(400).json({message: "Erreur dans l'Id Topic"})
         }
         const verifyCom = await models.coms.findOne({
@@ -79,17 +84,22 @@ module.exports = {
         
         const idCom = req.params.idCom
         console.log("eeeellfv", idCom)
-        if (!regexId.test(idCom)) {
+        if (!regexId.test(idCom) || idCom == "0") {
             return res.status(400).json({message: "Erreur dans l'idCom"})
         }
         await models.coms.findOne({ 
             where: {id: idCom},
             include: [{ 
-            model: models.users,
-            required: false
+                model: models.users,
+                required: false
             }, {
-            model: models.posts,
-            required: false}]
+                model: models.posts,
+                required: false
+            },
+            {
+                model: models.themes,
+                required: false
+            }]
         })
        .then((com)=> {
         console.log(com)
@@ -104,7 +114,7 @@ module.exports = {
         const idCom = req.params.idCom
         const text = req.body.text
 
-        if (!regexId.test(idCom) || !regexTextTopic.test(text)) {
+        if (!regexId.test(idCom) || idCom == "0" || !regexTextTopic.test(text)) {
             return res.status(400).json({message: "Merci de mettre des caractères valide."})
         }
         

@@ -9,9 +9,9 @@ const router = express.Router();
 // New Topic
 router.post('/new/post', middleware.loged, postController.newPost)
 // Obtenir un Topic
-router.get('/get/actualite/:idTopic', postController.getPost)
+router.get('/get/post/:idTopic', postController.getPost)
 // Obtenir tout les Topics
-router.get('/get/actualite/all/actu', postController.allPost)
+router.get('/get/all/post', postController.allPost)
 // Supprimer un Topic
 router.delete('/delete/post/:idTopic', middleware.updateDelPost, postController.delPost)
 // Modifier un Topic

@@ -6,18 +6,7 @@ import ModalDelete from "./modalDelete"
 
 
 
-// export function ModalEditerAdmin () {
-//     const domainName = "http://localhost:3000"
-//     history.pushState({}, "", domainName + "/admin/membres/" + params.idUser)
 
-//     const buttonModifier = document.querySelector('#blackScreenEditer')
-//     buttonModifier ?
-//     buttonModifier.style.display = "flex" : null
-
-//     return (
-
-//     )
-// } 
 
 export function TrModal(params: any) {
 

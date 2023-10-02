@@ -1,7 +1,5 @@
 'use client'
 import axios from 'axios'
-import { url } from 'inspector'
-import { Result } from 'postcss'
 
 export const actionLikePost = async (data: any) => {
     return await axios ({
@@ -10,16 +8,14 @@ export const actionLikePost = async (data: any) => {
         data: data
     })
     .then((res)=>{
-        console.log(res)
         return res.data
     })
     .catch((error)=>{
-        console.log(error)
+        return error
     })
 }
 
-export const getLikePost = async (data :any) => {
-    console.log(data)
+export const getLikePost = async (data :any) => { 
     return await axios ({
 
         method:'post',
@@ -27,11 +23,10 @@ export const getLikePost = async (data :any) => {
         data: data
     })
     .then((res)=>{
-        console.log(res)
         return res.data
     })
     .catch((error)=>{
-        console.log(error)
+        return error
     })
 }
 
@@ -42,10 +37,9 @@ export const getAllLikePost = async (data: any) => {
         data: data
     })
     .then((res)=>{
-        console.log(res)
         return res.data
     }).catch((error)=>{
-        console.log(error)
+        return error
     })
 }
 

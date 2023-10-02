@@ -5,6 +5,8 @@ import CreateCateg from "./component/createCateg";
 import jwt_decode from "jsonwebtoken"
 import { GetUser } from "@/api/user";
 import { getSet } from "@/api/setting";
+import CreateTheme from "./component/createTheme";
+import AllTheme from "./component/allTheme";
 
 
 export default function Membres() {
@@ -36,8 +38,9 @@ export default function Membres() {
     const [iconeUpdatePost, setIconeUpdatePost] = useState('')
 
     async function verifyAdmin() {
-        const idUser = jwt_decode.decode(localStorage.tokenUser)
+        const idUser = localStorage.tokenUser ? jwt_decode.decode(localStorage.tokenUser) : null
 
+        localStorage.tokenUser ?
         await GetUser(idUser.id)
         .then((res)=>{
             console.log(res.user.idRole)
@@ -45,7 +48,7 @@ export default function Membres() {
         })
         .catch((error)=>{
             console.log(error)
-        })
+        }) : null
     }
 
 
@@ -96,28 +99,28 @@ export default function Membres() {
     },[])
     return (
         <main className="w-full flex flex-col gap-8">
-            <nav style={{color:navbarTextColor, backgroundColor: backgroundColorFirst}}>
-                <ul className='flex font-bold justify-between text-xs' >
-
-                    <a href="/admin/membres"><li>Membres</li></a>
-                    <a href="/admin/categorie"><li>Catégories</li></a>
-                    <a href="/admin/roles"><li>Roles</li></a>
-                    <a href="/admin/settings"><li>Paramètre Forum</li></a>
-                </ul>
-            </nav>
+            
             {token && isAdmin.idRole == 1 ?
                 
                 (
                     <>
+                        <nav style={{color:navbarTextColor, backgroundColor: backgroundColorFirst}}>
+                            <ul className='flex font-bold justify-between text-xs' >
+
+                                <a href="/admin/membres"><li>Membres</li></a>
+                                <a href="/admin/categorie"><li>Catégories</li></a>
+                                <a href="/admin/roles"><li>Roles</li></a>
+                                <a href="/admin/settings"><li>Paramètre Forum</li></a>
+                            </ul>
+                        </nav>
+                        
+
+                        <CreateTheme backgroundColorThird={backgroundColorThird} backgroundColorGeneralButton={backgroundColorGeneralButton} textColorGeneralButton={textColorDeleteButton} backgroundColorZoneText={backgroundColorZoneText} textColor={generalTextColor}/>
+                        <AllTheme backgroundColorThird={backgroundColorThird} backgroundColorGeneralButton={backgroundColorGeneralButton} textColorGeneralButton={textColorDeleteButton} backgroundColorZoneText={backgroundColorZoneText} textColor={generalTextColor} backgroundColorDeleteButton={backgroundColorDeleteButton} backgroundColorUpdateButton={backgroundColorUpdateButton} textColorUpdateButton={textColorUpdateButton} textColorDeleteButton={textColorDeleteButton}/>
                         <CreateCateg backgroundColorThird={backgroundColorThird} backgroundColorGeneralButton={backgroundColorGeneralButton} textColorGeneralButton={textColorDeleteButton} backgroundColorZoneText={backgroundColorZoneText} textColor={generalTextColor}/>
                         <AllCateg backgroundColorThird={backgroundColorThird} backgroundColorGeneralButton={backgroundColorGeneralButton} textColorGeneralButton={textColorDeleteButton} backgroundColorZoneText={backgroundColorZoneText} textColor={generalTextColor} backgroundColorDeleteButton={backgroundColorDeleteButton} backgroundColorUpdateButton={backgroundColorUpdateButton} textColorUpdateButton={textColorUpdateButton} textColorDeleteButton={textColorDeleteButton}/>
                     </>
-                ) : (
-                        <div className=" h-full w-full flex flex-col items-center justify-center gap-8" style={{color:generalTextColor}}>
-                                    <h1 className="text-5xl bold">Verification</h1>
-                                    <h3 className="text-2xl">Verification des permissions.<br/> Veuillez patientez...</h3>
-                        </div>
-                )
+                ) : null
             }
         </main>
     )
