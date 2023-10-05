@@ -34,7 +34,7 @@ export default function Inscription() {
 
     async function designSetting(){
 
-        await getSet(2)
+        await getSet()
         .then((res)=>{
             setGeneralTextColor(res.data.setting.generalTextColor)
             setNavbarTextColor(res.data.setting.navbarTextColor)

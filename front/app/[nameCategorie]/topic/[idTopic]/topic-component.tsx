@@ -1,9 +1,9 @@
 import { memo, useEffect, useState } from "react";
 import { ButtonModals } from "./page";
-import { delPost, getPost, putPost } from "@/api/post";
+import { delPost, emptyImagePost, getPost, putPost } from "@/api/post";
 import { useParams, useRouter } from "next/navigation";
 import jwt_decode from 'jsonwebtoken'
-import { delComs, getAllCom, getCom, newCom, putComs } from "@/api/com";
+import { delComs, emptyImageCom, getAllCom, getCom, newCom, putComs } from "@/api/com";
 import { GetAllUser, GetUser } from "@/api/user";
 import { actionLikePost, getAllLikePost, getLikePost } from "@/api/likepost";
 import { actionLikeCom, AllLikeCom, getLikeCom } from "@/api/likecom";
@@ -28,8 +28,17 @@ export function ModalEditer(prop: any){
     const regexTextTopic = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]){8,255}$/;
     const regexId = /^([0-9]){1,}$/
     const regexToken = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]){2,}$/; 
-    
-    
+    const [imagePost, setImagePost] = useState({})
+
+    const regexImage = /^([a-zA-Z_.\d\s-]{1,25})\.(?:jpg|gif|png|bmp)$/
+
+    function RegexImagePost() {
+        if(!imagePost.name) {
+            return imagePost
+        } else {
+            return regexImage.test(imagePost.name)
+        }
+    }
     
 
     const handleEditPost = async (event: any)=>{
@@ -40,7 +49,8 @@ export function ModalEditer(prop: any){
         const data = {
             text: text,
             title: title,
-            token: localStorage.tokenUser
+            token: localStorage.tokenUser,
+            imagePost: imagePost
         }
 
 
@@ -52,8 +62,7 @@ export function ModalEditer(prop: any){
             divModalEditer.style.display = "none" : null
         }
 
-        
-        !regexId.test(paramsTopic) || !regexToken.test(token) || !text || regexTextTopic.test(text) === false || text === null || text === undefined || title === undefined || title === null || regexTitleTopic.test(title) === false || !title ?
+        RegexImagePost() === false|| !regexId.test(paramsTopic) || !regexToken.test(token) || !text || regexTextTopic.test(text) === false || text === null || text === undefined || title === undefined || title === null || regexTitleTopic.test(title) === false || !title ?
         setErrorMessage("Un des champs ne respect pas les conditions !") :
         await putPost(data, paramsTopic)
         .then((result)=>{
@@ -90,6 +99,35 @@ export function ModalEditer(prop: any){
         })
     }
 
+    async function handleImagePost() {
+        const data ={
+            token: localStorage.tokenUser,
+        }
+
+        function HandleCloseModalEditer() {
+            
+            let divModalEditer = document.getElementById("divModalEditer")
+            divModalEditer ?
+            divModalEditer.style.display = "none" : null
+        }
+        !regexId.test(paramsTopic) || paramsTopic == "0" ?
+        setErrorMessage("Erreur dans l'ID Topic") : 
+        await emptyImagePost(data, paramsTopic)
+        .then((res)=>{
+            setSucces(res.data.message)
+            let imgPost = document.querySelector('#imageOfThePost')
+            imgPost ?
+            imgPost.style.display = "none" : null
+            setTimeout(() => {
+                setSucces('')
+                HandleCloseModalEditer()
+            }, 1500);
+        })
+        .catch((error)=>{
+            setErrorMessage(error.response.data.message)
+        })
+    }
+
 
     function CloseModalEditer() {
         let divModalEditer = document.getElementById("divModalEditer")
@@ -109,18 +147,27 @@ export function ModalEditer(prop: any){
             (
 
                 <div id="divModalEditer" className="hidden justify-center items-center w-full h-full fixed left-0 top-0" style={{backgroundColor:"rgba(0, 0, 0, 0.598)"}}>
-                    <div id="ModalEditer" className="flex justify-center items-center flex-col fixed w-96 h-3/6 " style={{gap:"1vh" , backgroundColor:prop.backgroundColorThird, color:prop.textColor}}>
+                    <div id="ModalEditer" className="flex justify-center items-center flex-col fixed w-96 h-auto " style={{gap:"1vh" , backgroundColor:prop.backgroundColorThird, color:prop.textColor}}>
                         <h3 className="absolute top-0 right-0 text-xl" style={{color:prop.textColor}}  onClick={CloseModalEditer}>X</h3>
                         <h2 className="font-bold text-bold text-lg" style={{color:prop.textColor}}>Edition du texte</h2>
                         <h3 style={{color:"red"}} className="text-lg">{errorMessage}</h3>
                         <h3 style={{color:"green"}} className="text-lg">{succes}</h3>
-                        <form className="w-full h-full" onSubmit={handleEditPost} action="" method="put">
-                            <div className="flex flex-col gap-4 justify-center items-center w-full h-full">
+                        <form className="w-full h-full" onSubmit={handleEditPost} action="" method="put" encType="multipart/form-data">
+                            <div className="flex flex-col gap-4 justify-center items-center w-full h-auto">
                                 <h3 style={{color:prop.textColor}}>Titre du sujet</h3>
                                 <input className="w-64" type="text" style={{backgroundColor:prop.backgroundColorZoneText, color:prop.textColor}} onChange={(b)=>{setTitle(b.target.value)}} value={title}  pattern="^([\-!?._@+a-zA-ZËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒÕôöõòÿ\d\s]{8,255})$" required />
                                 <h3 style={{color:prop.textColor}}>Message du sujet</h3>
-                                
                                 <textarea className="resize-none w-64" style={{backgroundColor:prop.backgroundColorZoneText, color:prop.textColor}} onChange={(b)=>{setText(b.target.value)}} value={text} name="" id="textareaModalEditer" cols={30} rows={10} minLength={8} maxLength={255} placeholder="Ecrivez votre texte..."></textarea>
+                                
+                                {prop.imagePost ?
+                                 (
+
+                                <div id="imageOfThePost"  className=" relative">
+                                    <img src={"/imagepost/" + prop.imagePost} style={{zIndex:4}}className="max-h-24 max-w-24" alt="" />
+                                    <button type="button" className="rounded-full border absolute" style={{top:0,right: 0 ,borderColor:prop.textColor, color:"red", zIndex:"5"}} onClick={handleImagePost}>X</button>     
+                                </div>
+                                    ) : null}
+                                <input style={{color:prop.textColor, backgroundColor:prop.backgroundColorZoneText}} onChange={(b)=> setImagePost(b.target.files[0])} type="file" name="imagePost" id="" />
                                 <button className="rounded-full border border-black border-solid h-8 w-28 sm:rounded-full sm:border sm:border-black sm:border-solid sm:h-8 sm:w-28 md:rounded-full md:border md:border-black md:border-solid md:h-8 md:w-28 lg:rounded-full lg:border lg:border-black lg:border-solid lg:h-8 lg:w-28 xl:rounded-full xl:border xl:border-black xl:border-solid xl:h-8 xl:w-28" style={{backgroundColor:prop.backgroundColorUpdateButton, color:prop.textColorUpdateButton}} >Editer</button>
                             </div>
                         </form>
@@ -359,7 +406,6 @@ export function CardCommentaire(user: any) {
 
 
 export function ModalEditerCom(paramsCom : any){
-     
     const [text, setText] = useState('')
     const paramsTopic = useParams().idTopic
     const paramsCategorie = useParams().nameCategorie
@@ -368,11 +414,20 @@ export function ModalEditerCom(paramsCom : any){
     const [errorMessage, setErrorMessage] = useState('')
     const test = paramsCom.paramsCom
     const [token, setToken] = useState('')
-
     const regexTextTopic = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]){8,255}$/;
 
+    const [imagesComs, setImagesComs] = useState({})
+    const regexID = /^([0-9]){1,}$/
+    const regexImage = /^([a-zA-Z_.\d\s-]{1,25})\.(?:jpg|gif|png|bmp)$/
 
-   console.log("AAAAAAAAAAAAAAAAAAAAAA",paramsCom.paramsCom)
+    function RegexImageComs() {
+        if(!imagesComs.name) {
+            return imagesComs
+        } else {
+            return regexImage.test(imagesComs.name)
+        }
+    }
+
             
     function HandleCloseModalEditerCom() {
         let divModalEditerCom = document.getElementById("divModalEditerCom")
@@ -386,11 +441,11 @@ export function ModalEditerCom(paramsCom : any){
         event.preventDefault()
         const data = {
             text: text,
-            token: token
+            token: token,
+            imagesComs: imagesComs
         }
-        console.log("BBBBBBBBBBBBBBBBBBBBBBBBBB",paramsCom)
-        console.log('zzzzz', regexTextTopic.test(text), text, !text)
-        !regexToken.test(token) ||  !text || text === null || text === undefined  || regexTextTopic.test(text) === false ?
+        console.log(data)
+        !regexID.test(paramsCom.paramsCom) || RegexImageComs() === false || !regexToken.test(token) ||  !text || text === null || text === undefined  || regexTextTopic.test(text) === false ?
          setErrorMessage('Merci de mettre des caractères valide et de mettre au minimum 8 caractères.'):
         await putComs(data, paramsCom.paramsCom)
         .then((result)=>{
@@ -434,12 +489,47 @@ export function ModalEditerCom(paramsCom : any){
         divModalEditerCom.style.display = "none" : null
     }
 
+   
+   
+
+   
+
+    async function handleImageComs() {
+        const data ={
+            token: localStorage.tokenUser,
+        }
+
+        
+        !regexID.test(paramsCom.paramsCom) || paramsCom.paramsCom == "0" ?
+        setErrorMessage("Erreur dans l'ID Commentaire") : 
+        await emptyImageCom(data, paramsCom.paramsCom)
+        .then((res)=>{
+            if (res.status === 200) {
+
+                setSucces(res.data.message)
+                let imgCom = document.querySelector('#imageOfTheCom')
+                imgCom ?
+                imgCom.style.display = "none" : null
+                setTimeout(() => {
+                    setSucces('')
+                    HandleCloseModalEditerCom()
+                }, 1500);
+            } else {
+                return Promise.reject(res)
+            }
+        })
+        .catch((error)=>{
+            setErrorMessage(error.response.data.message)
+        }) 
+    }
+ 
+
     useEffect(()=>{
+        
         const dataToken = localStorage.getItem('tokenUser')
         dataToken ?
         setToken(dataToken) : null
     },[])
-
 
     return(
         <>
@@ -447,16 +537,26 @@ export function ModalEditerCom(paramsCom : any){
             (
 
                 <div id="divModalEditerCom" className="hidden justify-center items-center w-full h-full fixed left-0 top-0" style={{backgroundColor:"rgba(0, 0, 0, 0.598)"}}>
-                    <div id="ModalEditerCom" className="flex justify-center items-center flex-col fixed w-96 h-3/6 " style={{gap:"1vh" , backgroundColor:paramsCom.backgroundColorThird, color:paramsCom.textColor}}>
+                    <div id="ModalEditerCom" className="flex justify-center items-center flex-col fixed w-96 h-auto" style={{gap:"1vh" , backgroundColor:paramsCom.backgroundColorThird, color:paramsCom.textColor}}>
                         <h3 className="absolute top-0 right-0 text-xl" style={{color:paramsCom.textColor}}  onClick={CloseModalEditerCom}>X</h3>
                         <h2 style={{color:paramsCom.textColor}}className="font-bold text-bold text-lg">Edition du texte</h2>
                         <h3 style={{color:"red"}}>{errorMessage}</h3>
                         <h3 style={{color:"green"}}>{succes}</h3>
-                        <form className="h-full w-full" onSubmit={handleEditCom} action="" method="put">
-                            <div className="flex flex-col gap-4 justify-center items-center w-full h-full">
+                        <form className="h-full w-full" onSubmit={handleEditCom} action="" method="put" encType="multipart/form-data">
+                            <div className="flex flex-col gap-4 justify-center items-center w-full h-auto">
                                 <h3 style={{color:paramsCom.textColor}}>Message du sujet</h3>
-
+                              
                                 <textarea className="resize-none w-64" style={{backgroundColor:paramsCom.backgroundColorZoneText, color:paramsCom.textColor}} onChange={(b)=>{setText(b.target.value)}} value={text} name="" id="textareaModalEditer" cols={30} rows={10} minLength={8} maxLength={255} placeholder="Ecrivez votre texte..."></textarea>
+                                
+                                {paramsCom.imagesComs ?
+                                    (
+
+                                        <div id="imageOfTheCom"  className=" relative">
+                                            <img src={"/imagepost/" + paramsCom.imagesComs} style={{zIndex:4}}className="max-h-24 max-w-24" alt="" />
+                                            <button type="button" className="rounded-full border absolute" style={{backgroundColor:paramsCom.backgroundColorButtonGeneral ,top:0,right: 0 ,borderColor:paramsCom.textColorGeneralButton, color:paramsCom.textColorGeneralButton, zIndex:"5"}} onClick={handleImageComs}>X</button>     
+                                        </div>
+                                    ) : null}
+                                    <input style={{color:paramsCom.textColor, backgroundColor:paramsCom.backgroundColorZoneText}} onChange={(b)=> setImagesComs(b.target.files[0])} type="file" name="imagesComs" id="" />
                                 <button  className="rounded-full border border-black border-solid h-8 w-28 sm:rounded-full sm:border sm:border-black sm:border-solid sm:h-8 sm:w-28 md:rounded-full md:border md:border-black md:border-solid md:h-8 md:w-28 lg:rounded-full lg:border lg:border-black lg:border-solid lg:h-8 lg:w-28 xl:rounded-full xl:border xl:border-black xl:border-solid xl:h-8 xl:w-28" style={{backgroundColor:paramsCom.backgroundColorUpdateButton, color:paramsCom.textColorUpdateButton}}>Editer</button>
                             </div>
                         </form>
@@ -589,7 +689,7 @@ export function ButtonModalsCom(params: any) {
     const [comInfo, setComInfo] = useState({})
 
     const OpenModalEditerCom = () => {
-        
+        params.setPropImage(params.imageComs)
         params.setProp(params.idCom)
         
         
@@ -756,6 +856,7 @@ export function LikeCom(prop: any) {
 
 export function Commentaire(prop: any) {
     const [idCom, setIdCom] = useState('')
+    const [imageCom, setImageCom] = useState('')
     const [com, setCom] = useState([])
     const paramsTopic = useParams().idTopic
     const [paramsUser, setParamsUser] = useState('')
@@ -781,13 +882,23 @@ export function Commentaire(prop: any) {
                         return (
                             
                             <div key={index} className="flex flex-col justify-center items-center gap-4 border border-black h-96">
-                                <ButtonModalsCom iconeDeletePost={prop.iconeDeletePost} iconeUpdatePost={prop.iconeUpdatePost} setProp={setIdCom} idCom={coms.id}/>
-                                <ModalEditerCom backgroundColorThird={prop.backgroundColorThird} backgroundColorUpdateButton={prop.backgroundColorUpdateButton} backgroundColorZoneText={prop.backgroundColorZoneText} textColor={prop.textColor} textColorUpdateButton={prop.textColorUpdateButton} paramsCom={idCom}/>
+                                <ButtonModalsCom iconeDeletePost={prop.iconeDeletePost} iconeUpdatePost={prop.iconeUpdatePost} setPropImage={setImageCom} imageComs={coms.imageComs} setProp={setIdCom} idCom={coms.id}/>
+                                <ModalEditerCom backgroundColorButtonGeneral={prop.backgroundColorButtonGeneral} textColorGeneralButton={prop.textColorGeneralButton} backgroundColorThird={prop.backgroundColorThird} backgroundColorUpdateButton={prop.backgroundColorUpdateButton} backgroundColorZoneText={prop.backgroundColorZoneText} textColor={prop.textColor} textColorUpdateButton={prop.textColorUpdateButton} imagesComs={imageCom} paramsCom={idCom}/>
                                 
                                 <ModalSupprimerCom backgroundColorThird={prop.backgroundColorThird} backgroundColorDeleteButton={prop.backgroundColorDeleteButton} backgroundColorZoneText={prop.backgroundColorZoneText} textColor={prop.textColor} textColorDeleteButton={prop.textColorDeleteButton} paramsCom={idCom}/>                                    
                                 <div key={index} className="flex w-full">
                                     <CardCommentaire  backgroundColorCardMember={prop.backgroundColorCardMember} textColor={prop.textColor}  user={coms.user.pseudo} test={coms.idUser}/>
-                                    <p style={{color:prop.textColor}} className="w-7/12">{coms.textComs}</p>
+                                    
+                                    <div className="flex flex-col gap-12">
+
+                                        <p style={{color:prop.textColor}} className="w-7/12">{coms.textComs}</p>
+                                        {coms.imageComs ? 
+                                        (
+
+                                            <img src={"/imagepost/" + coms.imageComs} className="max-h-48 max-w-48"  alt="" />
+                                        ): null}
+                                    </div>
+                    
                                 </div>
                                 <LikeCom iconeLikeFalse={prop.iconeLikeFalse} iconeLikeTrue={prop.iconeLikeTrue} idCom={coms.id} idTheme={prop.idTheme}/>    
                                 <hr/>
@@ -814,6 +925,17 @@ export function TextareaCom(prop: any) {
     const [succes, setSucces] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
     const [idTheme, setIdTheme] = useState('')
+    const [imagesComs, setImagesComs] = useState({})
+    const regexImage = /^([a-zA-Z_.\d\s-]{1,25})\.(?:jpg|gif|png|bmp)$/
+
+    function RegexImageComs() {
+        if(!imagesComs.name) {
+            return imagesComs
+        } else {
+            return regexImage.test(imagesComs.name)
+        }
+    }
+
 
     async function getACategorie(){
         await getCateg(idCategorie)
@@ -844,12 +966,13 @@ export function TextareaCom(prop: any) {
             idCategorie: idCategorie,
             idTopic: idTopic,
             token: token,
-            idTheme: idTheme
+            idTheme: idTheme,
+            imagesComs: imagesComs
         }
 
         
-
-        !regexToken.test(token) || !text || text === null || text === undefined || !regexTextTopic.test(text) || !regexID.test(idUser) || !regexID.test(idCategorie) || !regexID.test(idTopic) ?
+        console.log(data)
+        RegexImageComs() === false || !regexToken.test(token) || !text || text === null || text === undefined || !regexTextTopic.test(text) || !regexID.test(idUser) || !regexID.test(idCategorie) || !regexID.test(idTopic) ?
         setErrorMessage('Merci de mettre des caractères valide, minimum 8 caractères.') :
         await newCom(data) 
         .then((data)=> {
@@ -890,10 +1013,11 @@ export function TextareaCom(prop: any) {
     })
 
     return(
-        <form onSubmit={handleNewCom} action="" method="post">
+        <form onSubmit={handleNewCom} action="" method="post" encType="multipart/form-data">
             <h3 style={{color:"red"}}>{errorMessage}</h3>
             <h3 style={{color:"green"}}>{succes}</h3>
             <textarea onChange={(b)=> setText(b.target.value)} value={text} id="" cols={30} rows={10} placeholder="Votre texte..." className="w-full resize-none" style={{backgroundColor:prop.backgroundColorZoneText, color:prop.textColor}}></textarea>
+            <input style={{color:prop.textColor, backgroundColor:prop.backgroundColorZoneText}} onChange={(b)=> setImagesComs(b.target.files[0])} type="file" name="imagesComs" id="" />
             <button className="rounded-full border border-black border-solid h-8 w-28 sm:rounded-full sm:border sm:border-black sm:border-solid sm:h-8 sm:w-28 md:rounded-full md:border md:border-black md:border-solid md:h-8 md:w-28 lg:rounded-full lg:border lg:border-black lg:border-solid lg:h-8 lg:w-28 xl:rounded-full xl:border xl:border-black xl:border-solid xl:h-8 xl:w-28" style={{background:prop.backgroundColorButtonGeneral, color:prop.textColorGeneralButton}}>Poster</button>
         </form>
     )
@@ -1062,7 +1186,7 @@ export function ContentTopic() {
         .then((res:any)=>{
             setPost(res)
             setIdUser(res.idUser)
-            console.log(res.idUser)
+            console.log(res)
             console.log('getpost', res)
         })
         .catch((error)=> {
@@ -1075,7 +1199,7 @@ export function ContentTopic() {
 
     async function designSetting(){
 
-        await getSet(2)
+        await getSet()
         .then((res)=>{
             setGeneralTextColor(res.data.setting.generalTextColor)
             setNavbarTextColor(res.data.setting.navbarTextColor)
@@ -1125,18 +1249,26 @@ export function ContentTopic() {
     return (
         <section className="w-11/12" style={{backgroundColor:backgroundColorThird, color:generalTextColor}}>
             <h2 className="text-center text-5xl" style={{color:generalTextColor, backgroundColor:backgroundColorFirst}}>{post.titlePost}</h2>
-            <ModalEditer backgroundColorThird={backgroundColorThird} backgroundColorUpdateButton={backgroundColorUpdateButton} backgroundColorZoneText={backgroundColorZoneText} textColor={generalTextColor} textColorUpdateButton={textColorUpdateButton}/>
+            <ModalEditer imagePost={post.imagePost} backgroundColorThird={backgroundColorThird} backgroundColorUpdateButton={backgroundColorUpdateButton} backgroundColorZoneText={backgroundColorZoneText} textColor={generalTextColor} textColorUpdateButton={textColorUpdateButton}/>
             <ModalSupprimer backgroundColorThird={backgroundColorThird} backgroundColorDeleteButton={backgroundColorDeleteButton} backgroundColorZoneText={backgroundColorZoneText} textColor={generalTextColor} textColorDeleteButton={textColorDeleteButton}/>
             <div className="flex flex-col justify-center items-center border border-black gap-6 h-96" >
                 <ButtonModals iconeDeletePost={iconeDeletePost} iconeUpdatePost={iconeUpdatePost}/>
                 <div className="flex w-full">
                     <CardMember idUser={idUser} backgroundColorCardMember={backgroundColorCardMember} textColor={generalTextColor}/>
+                    <div className="flex flex-col gap-12">
+
                     <p style={{color:generalTextColor}}>{post.textPost}</p>
+                    {post.imagePost ?
+                    (
+
+                        <img src={"/imagepost/" + post.imagePost} className="max-h-48 max-w-48"  alt="" />
+                    ): null}
+                    </div>
                 </div>
                 <LikeTopic iconeLikeFalse={iconeLikeFalse} iconeLikeTrue={iconeLikeTrue}/>
             </div>
             <hr/>
-            <Commentaire idTheme={idTheme} backgroundColorThird={backgroundColorThird} backgroundColorUpdateButton={backgroundColorUpdateButton} backgroundColorDeleteButton={backgroundColorDeleteButton} backgroundColorZoneText={backgroundColorZoneText} textColor={generalTextColor} backgroundColorCardMember={backgroundColorCardMember}  iconeDeletePost={iconeDeletePost} iconeUpdatePost={iconeUpdatePost} iconeLikeFalse={iconeLikeFalse} iconeLikeTrue={iconeLikeTrue} textColorUpdateButton={textColorUpdateButton} textColorDeleteButton={textColorDeleteButton}/>
+            <Commentaire idTheme={idTheme} backgroundColorThird={backgroundColorThird} backgroundColorUpdateButton={backgroundColorUpdateButton} backgroundColorDeleteButton={backgroundColorDeleteButton} backgroundColorZoneText={backgroundColorZoneText} textColor={generalTextColor} backgroundColorCardMember={backgroundColorCardMember}  iconeDeletePost={iconeDeletePost} iconeUpdatePost={iconeUpdatePost} iconeLikeFalse={iconeLikeFalse} iconeLikeTrue={iconeLikeTrue} textColorUpdateButton={textColorUpdateButton} textColorDeleteButton={textColorDeleteButton} backgroundColorButtonGeneral={backgroundColorGeneralButton} textColorGeneralButton={textColorGeneralButton}/>
             {token ?
                 ( 
                     <TextareaCom backgroundColorZoneText={backgroundColorZoneText} textColor={generalTextColor} textColorButton={textColorGeneralButton} backgroundColorButtonGeneral={backgroundColorGeneralButton}/>

@@ -11,10 +11,10 @@ const regexNameForum = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛ�
 module.exports = {
     putSet: async (req, res) => {
         const {nameForum, generalTextColor, backgroundColorThird , navbarTextColor, nameForumColor, textColorGeneralButton,	textColorDeleteButton, textColorUpdateButton, textColorCardMember, backgroundColorNavbar, backgroundColorFirst, backgroundColorSecond, backgroundColorCadre, backgroundColorCategorie, backgroundColorButtonBurger, backgroundColorGeneralButton, backgroundColorDeleteButton, backgroundColorUpdateButton, backgroundColorCardMember, backgroundColorZoneText} = req.body
-        const idSetting = req.params.idSetting
-        if (!regexId.test(idSetting)) {
-            return res.status(400).json({message: "Une erreur est survenu sur l'Id"})
-        }
+        // const idSetting = req.params.idSetting
+        // if (!regexId.test(idSetting)) {
+        //     return res.status(400).json({message: "Une erreur est survenu sur l'Id"})
+        // }
         console.log("rrrrrrrrrrrrrrr", req.files)
 
         function regexIconeDeletePost() {
@@ -98,7 +98,7 @@ module.exports = {
         console.log("mario", req.files)
 
 
-        const setting = await models.settings.findOne({where: {id: idSetting}})
+        const setting = await models.settings.findOne({where: {activate: 1}})
         await setting.update({
             generalTextColor: generalTextColor !== " " && generalTextColor !== "" && generalTextColor !== null && generalTextColor !== undefined ? generalTextColor : setting.generalTextColor, 
             navbarTextColor: navbarTextColor !== " " && navbarTextColor !== "" && navbarTextColor !== null && navbarTextColor !== undefined ? navbarTextColor : setting.navbarTextColor,  
@@ -135,10 +135,79 @@ module.exports = {
     
     },
 
-    getSet: async (req, res)=> {
+    changeSet: async (req, res)=>{
         const idSetting = req.params.idSetting
-        console.log("yooyoyoyyo", idSetting)
-        const result = await models.settings.findOne({where: {id: idSetting}})
+        const sets = await models.settings.findOne({where: {activate: 1}})
+        if (sets) {
+            sets.update({
+                activate: 0
+            })
+        }
+        const changeSet = await models.settings.findOne({where: {id: idSetting}})
+        changeSet.update({
+            activate: 1
+        })
+        .then((result)=>{
+            return  res.status(200).json({message: "Paramètre forum modifié avec succès."})
+        })
+        .catch(()=>{
+            return res.status(500).json({message: "Une erreur est survenu"})
+        })
+    },
+
+    newSet: async (req,res) => {
+        const {nameForum, generalTextColor, backgroundColorThird , navbarTextColor, nameForumColor, textColorGeneralButton,	textColorDeleteButton, textColorUpdateButton, textColorCardMember, backgroundColorNavbar, backgroundColorFirst, backgroundColorSecond, backgroundColorCadre, backgroundColorCategorie, backgroundColorButtonBurger, backgroundColorGeneralButton, backgroundColorDeleteButton, backgroundColorUpdateButton, backgroundColorCardMember, backgroundColorZoneText} = req.body
+        const nameSetting = req.body.nameSetting
+        const newSet = await models.settings.create({
+            nameSetting: nameSetting,
+            generalTextColor: generalTextColor,
+            navbarTextColor: navbarTextColor,
+            nameForumColor: nameForumColor,
+            textColorGeneralButton: textColorGeneralButton,
+            textColorDeleteButton:textColorDeleteButton,
+            textColorUpdateButton: textColorUpdateButton,
+            textColorCardMember:textColorCardMember,
+            backgroundColorNavbar: backgroundColorNavbar,
+            backgroundColorFirst:backgroundColorFirst,
+            backgroundColorSecond:backgroundColorSecond,
+            backgroundColorCadre: backgroundColorCadre,
+            backgroundColorCategorie: backgroundColorCategorie,
+            backgroundColorButtonBurger: backgroundColorButtonBurger,
+            backgroundColorGeneralButton: backgroundColorGeneralButton,
+            backgroundColorDeleteButton: backgroundColorDeleteButton,
+            backgroundColorUpdateButton: backgroundColorUpdateButton,
+            backgroundColorCardMember: backgroundColorCardMember,
+            backgroundColorZoneText: backgroundColorZoneText,
+            backgroundColorThird:backgroundColorThird,
+            nameForum: nameForum,
+            iconeLikeTrue: req.files.iconeLikeTrue[0].filename,
+            iconeLikeFalse: req.files.iconeLikeFalse[0].filename,
+            iconeDeletePost:req.files.iconeDeletePost[0].filename,
+            iconeUpdatePost: req.files.iconeUpdatePost[0].filename
+        })
+
+        if (newSet) {
+
+        return res.status(200).json({message: nameSetting +  " a bien été crée"})
+        } else {
+        return res.status(500).json({message: "Une erreur est survenu"})
+        }
+    },
+
+    allSet: async (req, res)=>{
+        await models.settings.findAll()
+        .then((setting)=> {
+            console.log("zzzz",setting)
+            return res.status(200).json({settings: setting})
+        })
+        .catch(()=>{
+            return res.status(500).json({message: "Une erreur est survenu"})
+        })
+    },
+
+    getSet: async (req, res)=> {
+        
+        const result = await models.settings.findOne({where: {activate: 1}})
         .then((result)=>{
             return res.status(200).json({setting: result})
         })

@@ -35,6 +35,7 @@ export const newCateg = async (data: any) => {
 }
 
 export const UpdateCateg = async (data: any, params: any) =>{
+    
     return await axios ({
         method:"put",
         url: `${process.env.CXCD}/categorie/edit/categorie/${params}`,

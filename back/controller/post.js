@@ -5,12 +5,27 @@ const dotenv = require('dotenv').config({path: "././.env"});
 const regexTitleTopic = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]){8,45}$/; 
 const regexTextTopic = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]){8,255}$/;
 const regexId = /^([0-9]){1,}$/
+const regexImage = /^([a-zA-Z_.\d\s-]{1,25})\.(?:jpg|gif|png|bmp)$/
+
 
 
 module.exports = {
     newPost: async (req , res) => {
         const {title, text, idUser, idCategorie, idTheme} = req.body
-        
+
+        function imagePost() {
+            if (req.file) {
+                if (regexImage.test(req.file.originalname)) {
+
+                    return req.file.filename
+                } else {
+                    return res.status(400).json({message: "Caractères invalide"})
+                }
+            } else {
+                return null
+            }
+        }
+
         if (title == "0" || text == "0" || idUser == "0" || idCategorie == "0" || idTheme == "0" || !regexTextTopic.test(text) || !regexTitleTopic.test(title) || !regexId.test(idUser) || !regexId.test(idCategorie)) {
             return res.status(400).json({message: "Merci de mettre des caractères valide."})
         }
@@ -25,7 +40,8 @@ module.exports = {
                 textPost: text,
                 idUser: idUser,
                 idCategorie: idCategorie,
-                idTheme: idTheme
+                idTheme: idTheme,
+                imagePost: imagePost()
             })
             if (newPost) {
                 return res.status(200).json({message: title +  ' a bien été crée.', post: newPost})
@@ -42,7 +58,7 @@ module.exports = {
             return res.status(400).json({message: "Erreur dans l'IdTopic"})
         }
         await models.posts.findOne({ 
-            attributes:['id', 'idUser', 'titlePost', 'textPost'], 
+            attributes:['id', 'idUser', 'titlePost', 'textPost', "imagePost"], 
             where: {id: idTopic},
             include: [{ 
                 model: models.users,
@@ -60,6 +76,31 @@ module.exports = {
         console.log(error)
         return res.status(400).json({message:"Post pas trouvé"})
        }) 
+    },
+
+    emptyImagePost: async (req, res)=>{
+        const idTopic = req.params.idTopic
+
+        if (!regexId.test(idTopic) || idTopic == "0") {
+            return res.status(400).json({message: "Une erreur dans l'Id Topic."})
+        }
+
+        const result = await models.posts.findOne({ where: {id: idTopic}})
+        if (result) {
+            result.update({
+                imagePost: null
+            })
+            .then((result)=>{
+                return res.status(200).json({message: "Image retirer"})
+
+            })
+            .catch(()=>{
+                return res.status(500).json({message: "Une erreur est suvenu."})
+            })
+        } else {
+            return res.status(400).json({message:"Post non trouvée"})
+        }
+        
     },
 
     allPost : async (req, res) => {
@@ -117,6 +158,22 @@ module.exports = {
     putPost : async (req, res) => {
         const idTopic = req.params.idTopic
         const {title, text} = req.body
+        console.log(req.file)
+        function imagePost() {
+            if (req.file.originalname) {
+                if (regexImage.test(req.file.originalname)) {
+
+                    return req.file.filename
+                } else {
+                    return res.status(400).json({message: "Image contenant caractères invalide"})
+                }
+            } else {
+                return null
+            }
+        }
+
+        console.log(imagePost())
+
         if (idTopic == "0" || !regexId.test(idTopic) || !regexTextTopic.test(text) || !regexTitleTopic.test(title)) {
             return res.status(400).json({message: "Merci de mettre des caractères valide."})
         }
@@ -130,6 +187,7 @@ module.exports = {
             await verifyPost.update({
                 titlePost: title ? title : verifyPost.titlePost,
                 textPost: text ? text : verifyPost.textPost,
+                imagePost: imagePost() !== null ? imagePost() : verifyPost.imagePost
             })
             .then((result)=>{
                 return res.status(200).json({message: "Topic modifié avec succès"})

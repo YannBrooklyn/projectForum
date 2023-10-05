@@ -34,7 +34,7 @@ export default function Topic(){
 
     async function designSetting(){
 
-        await getSet(2)
+        await getSet()
         .then((res)=>{
             setGeneralTextColor(res.data.setting.generalTextColor)
             setNavbarTextColor(res.data.setting.navbarTextColor)
@@ -162,7 +162,7 @@ export function ButtonModals(prop: any) {
 
     async function designSetting(){
 
-        await getSet(2)
+        await getSet()
         .then((res)=>{
             setGeneralTextColor(res.data.setting.generalTextColor)
             setNavbarTextColor(res.data.setting.navbarTextColor)

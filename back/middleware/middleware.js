@@ -114,6 +114,7 @@ module.exports = {
     },
 
     updateDelPost: async (req, res, nex)=>{
+        
         const token = req.body.token
         const idTopic = req.params.idTopic
         const regexToken = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]){2,}$/; 
@@ -154,6 +155,7 @@ module.exports = {
     updateDelComs: async (req, res, nex)=>{
         const token = req.body.token
         console.log(token)
+        console.log("jour de paie", req.body)
         const idCom = req.params.idCom
         const regexToken = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]){2,}$/; 
         const regexID = /^([0-9]){1,}$/

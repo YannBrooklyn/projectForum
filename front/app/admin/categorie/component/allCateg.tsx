@@ -84,7 +84,7 @@ export default function AllCateg(prop: any) {
                         return (
                             <tr className="border" style={{color:prop.textColor}} key={index}>
                                 <td className="border">{categ.nameCategorie}</td>
-                                <td className="border">{categ.nameCategorie}</td>
+                                <td className="border">{categ.coms.length + categ.posts.length}</td>
                                 <TrModal backgroundColorUpdateButton={prop.backgroundColorUpdateButton} backgroundColorDeleteButton={prop.backgroundColorDeleteButton} textColorDeleteButton={prop.textColorDeleteButton} textColorUpdateButton={prop.textColorDeleteButton} idCateg={categ.id} setProp={setIdCategFromTR}/>
                             </tr>
                         )

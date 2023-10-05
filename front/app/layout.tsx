@@ -41,7 +41,7 @@ export default function RootLayout({
 
     async function designSetting(){
 
-         getSet(2)
+         getSet()
         .then((res)=>{
             setNameForum(res.data.setting.nameForum)
             setGeneralTextColor(res.data.setting.generalTextColor)

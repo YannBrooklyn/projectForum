@@ -24,7 +24,12 @@ module.exports = {
     },
 
     allTheme: async (req, res) => {
-        await models.themes.findAll()
+        await models.themes.findAll({
+            include: [{
+                model: models.categorie,
+                required: false
+            }]
+        })
         .then((theme)=> {
             return res.status(200).json({themes: theme})
         })

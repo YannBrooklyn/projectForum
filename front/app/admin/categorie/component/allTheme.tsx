@@ -74,7 +74,7 @@ export default function AllTheme(prop: any) {
                     </tr>
                     <tr className="border" style={{color:prop.textColor}}>
                         <th className="border">Nom de Theme</th>
-                        <th className="border">Nombre de message</th>
+                        <th className="border">Nombre de catégorie</th>
                         <th className="border">Modification</th>
                         <th className="border">Suppression</th>
                     </tr>
@@ -84,7 +84,7 @@ export default function AllTheme(prop: any) {
                         return (
                             <tr className="border" style={{color:prop.textColor}} key={index}>
                                 <td className="border">{theme.nameTheme}</td>
-                                <td className="border">{theme.nameTheme}</td>
+                                <td className="border">{theme.categories.length}</td>
                                 <TrModal backgroundColorUpdateButton={prop.backgroundColorUpdateButton} backgroundColorDeleteButton={prop.backgroundColorDeleteButton} textColorDeleteButton={prop.textColorDeleteButton} textColorUpdateButton={prop.textColorDeleteButton} idTheme={theme.id} setProp={setIdThemeFromTR}/>
                             </tr>
                         )

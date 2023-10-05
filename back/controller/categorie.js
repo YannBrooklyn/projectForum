@@ -24,7 +24,21 @@ module.exports = {
     },
 
     allCateg : async (req, res) => {
-        await models.categorie.findAll()
+        await models.categorie.findAll({
+            include: [{ 
+                model: models.themes,
+                required: false
+            },
+            {
+                model: models.posts,
+                required: false
+            },
+            {
+                model: models.coms,
+                required: false
+            }]
+            
+        })
         .then((categories)=> {
             return res.status(200).json({categories: categories})
         })

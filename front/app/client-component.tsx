@@ -43,8 +43,12 @@ export function Categorie(prop: any) {
                     if (prop.idTheme == categ.idTheme) {
                     return (
                         <a key={index} href={"/" + categ.id + "/"}>
-                            <div style={{color:prop.textColor, height:"6vh", backgroundColor:prop.backgroundColor, width:"100%", borderStyle:"solid", borderWidth:"0.2vh", borderColor:"black"}}>
+                            <div className="flex justify-between" style={{color:prop.textColor, height:"6vh", backgroundColor:prop.backgroundColor, width:"100%", borderStyle:"solid", borderWidth:"0.2vh", borderColor:"black"}}>
                                 <h4 style={{color:prop.textColor}}>{categ.nameCategorie}</h4>
+                                <div className="flex flex-row gap-12 text-xs">
+                                <h4 style={{color:prop.textColor}}>{categ.posts.length}<br/>Topic</h4>
+                                <h4 style={{color:prop.textColor}}>{categ.posts.length + categ.coms.length}<br/>Message</h4>
+                                </div>
                             </div>
                         </a>
                     ) }
@@ -84,15 +88,15 @@ export function Theme(prop: any) {
                 <>
                 
                 {themes != undefined && themes.length > 0 ?
-                themes.map((theme, index) =>{
-                    return(
+                    themes.map((theme, index) =>{
+                        return(
 
-                            <section key={index}>
-                                <h4 style={{color:prop.textColor, height:"6vh", backgroundColor:prop.backgroundColorSecond, textAlign:"center", width:"100%", borderStyle:"solid", borderWidth:"0.2vh", borderColor:"black"}}>{theme.nameTheme}</h4>
-                                <Categorie idTheme={theme.id} textColor={prop.textColor} backgroundColor={prop.backgroundColor}/>
-                            </section>
-                        
-                    )
+                                <section key={index}>
+                                    <h4 style={{color:prop.textColor, height:"6vh", backgroundColor:prop.backgroundColorSecond, textAlign:"center", width:"100%", borderStyle:"solid", borderWidth:"0.2vh", borderColor:"black"}}>{theme.nameTheme}</h4>
+                                    <Categorie idTheme={theme.id} textColor={prop.textColor} backgroundColor={prop.backgroundColor}/>
+                                </section>
+                            
+                        )
                 }): null}
             
                 </>
@@ -215,7 +219,7 @@ export function MenuBurger() {
 
     async function designSetting(){
 
-        await getSet(2)
+        await getSet()
         .then((res)=>{
             setGeneralTextColor(res.data.setting.generalTextColor)
             setNavbarTextColor(res.data.setting.navbarTextColor)
@@ -415,7 +419,7 @@ export function Navbar() {
 
     async function designSetting(){
 
-        await getSet(2)
+        await getSet()
         .then((res)=>{
             setGeneralTextColor(res.data.setting.generalTextColor)
             setNavbarTextColor(res.data.setting.navbarTextColor)

@@ -5,9 +5,26 @@ export const newCom = async (data: any) => {
     return await axios ({
         method: 'post',
         url: `${process.env.CXCD}/com/new/com`,
-        data: data
+        data: data,
+        headers: {
+            'Content-Type': "multipart/form-data"
+        }
     })
     .then((result)=> {
+        return result
+    })
+    .catch((error)=>{
+        return error
+    })
+}
+
+export const emptyImageCom = async (data: any, params: any) =>{
+    return await axios ({
+        method:"put",
+        url:`${process.env.CXCD}/com/put/image/com/${params}`,
+        data: data
+    })
+    .then((result)=>{
         return result
     })
     .catch((error)=>{
@@ -29,24 +46,31 @@ export const getAllCom = async () => {
 }
 
 export const getCom = async (paramsCom: any) =>{
+    console.log(paramsCom)
     return await axios({
         method: 'get',
         url: `${process.env.CXCD}/com/get/com/${paramsCom}`,
        
     })
     .then((result)=> {
+        console.log(result.data.com.imageComs)
         return result.data.com
     })
     .catch((error)=> {
+        console.log(error)
         return error
     })
 }
 
 export const putComs = async (data: any, paramsCom: any) => {
+    console.log(data)
     return await axios ({
         method: 'put',
         url: `${process.env.CXCD}/com/put/com/${paramsCom}`,
-        data: data
+        data: data,
+        headers: {
+            'Content-Type': "multipart/form-data"
+        }
     })
     .then((result)=>{
         

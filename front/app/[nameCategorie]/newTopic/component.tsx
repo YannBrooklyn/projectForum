@@ -22,7 +22,7 @@ export function ContentNewTopic(){
     const regexToken = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]){2,}$/; 
     const paramsCategorie = useParams().nameCategorie
     const [idTheme, setIdTheme] = useState('')
-
+    const [imagePost, setImagePost] = useState({})
     const [generalTextColor, setGeneralTextColor] = useState('')
     const [navbarTextColor, setNavbarTextColor] = useState('')
     const [nameForumColor, setNameForumColor] = useState('')
@@ -41,7 +41,16 @@ export function ContentNewTopic(){
     const [backgroundColorUpdateButton, setBackgroundColorUpdateButton] = useState('')
     const [backgroundColorCardMember, setBackgroundColorCardMember] = useState('')
     const [backgroundColorZoneText, setBackgroundColorZoneText] = useState('')
-    
+    const regexImage = /^([a-zA-Z_.\d\s-]{1,25})\.(?:jpg|gif|png|bmp)$/
+
+    function RegexImagePost() {
+        if(!imagePost.name) {
+            return imagePost
+        } else {
+            return regexImage.test(imagePost.name)
+        }
+    }
+
     async function getACategorie(){
         await getCateg(paramsCategorie)
         .then((res)=>{
@@ -63,7 +72,7 @@ export function ContentNewTopic(){
 
     async function designSetting(){
 
-        await getSet(2)
+        await getSet()
         .then((res)=>{
             setGeneralTextColor(res.data.setting.generalTextColor)
             setNavbarTextColor(res.data.setting.navbarTextColor)
@@ -111,13 +120,14 @@ export function ContentNewTopic(){
             idUser: idUser,
             idCategorie: idCategorie,
             token: token,
-            idTheme: idTheme
+            idTheme: idTheme,
+            imagePost: imagePost
         }
 
         
         console.log('tt', data)
         console.log(regexTextTopic.test(text), regexTitleTopic.test(title), regexId.test(idCategorie) , regexId.test(idUser) ,idUser )
-        !regexToken.test(token) || !title || title === null || regexTitleTopic.test(title) === false || title === undefined  || regexTextTopic.test(text) === false || !text || text === null || text === undefined || regexId.test(idCategorie) === false || regexId.test(idTheme) === false || regexId.test(idUser) === false ?
+        RegexImagePost() === false || !regexToken.test(token) || !title || title === null || regexTitleTopic.test(title) === false || title === undefined  || regexTextTopic.test(text) === false || !text || text === null || text === undefined || regexId.test(idCategorie) === false || regexId.test(idTheme) === false || regexId.test(idUser) === false ?
         setErrorMessage("Un des champs ne respect pas les conditions !") :
         await newPost(data)
         .then((data)=>{
@@ -158,13 +168,14 @@ export function ContentNewTopic(){
 
     }
         return (
-        <form action="" onSubmit={handleNewPost} method="post">
+        <form action="" onSubmit={handleNewPost} method="post" datatype='multipart/form-data'>
             <section className='w-full flex flex-col items-center gap-8 sm:w-full sm:flex sm:flex-col sm:items-center sm:gap-8 md:w-full md:flex md:flex-col md:items-center md:gap-8 lg:w-full lg:flex lg:flex-col lg:items-center lg:gap-8 xl:w-full xl:flex xl:flex-col xl:items-center xl:gap-8'>
                 <h3 style={{color:"green"}}>{succes}</h3>
                 <h3 style={{color:"red"}}>{errorMessage}</h3>
                 <h2 style={{color:generalTextColor}} className='text-5xl sm:text-5xl md:text-5xl lg:text-5xl xl:text-5xl'>Nouveau Topic</h2>
                 <input className='w-10/12 sm:w-10/12 md:w-7/12 lg:w-7/12 xl:w-7/12' type="text"  placeholder="Votre titre..." id="" style={{backgroundColor:backgroundColorZoneText, color:generalTextColor}} onChange={(b) => setTitle(b.target.value)} value={title}  pattern="^([\-!?._@+a-zA-ZËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ\d\s]{8,255})$" required />
                 <textarea  className="w-10/12 resize-none sm:w-10/12 sm:resize-none md:w-10/12 md:resize-none lg:w-7/12 lg:resize-none xl:resize-none xl:w-7/12" onChange={(b)=> setText(b.target.value)} value={text} id="" cols={30} rows={10} placeholder="Votre texte..." style={{backgroundColor:backgroundColorZoneText, color:generalTextColor }} minLength={8} maxLength={255}></textarea>
+                <input style={{color:generalTextColor, backgroundColor:backgroundColorZoneText}} onChange={(b)=> setImagePost(b.target.files[0])} type="file" name="imagePost" id="" />
                 <button className="rounded-full border border-black border-solid h-8 w-28 sm:rounded-full sm:border sm:border-black sm:border-solid sm:h-8 sm:w-28 md:rounded-full md:border md:border-black md:border-solid md:h-8 md:w-28 lg:rounded-full lg:border lg:border-black lg:border-solid lg:h-8 lg:w-28 xl:rounded-full xl:border xl:border-black xl:border-solid xl:h-8 xl:w-28" style={{background:backgroundColorGeneralButton, color:textColorGeneralButton}}>Poster</button>
             </section>
         </form>

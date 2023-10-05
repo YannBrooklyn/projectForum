@@ -39,7 +39,7 @@ export default function ModalUpdateCateg(params: any) {
             modalEditer.style.display = "none" : null
         }
 
-
+        
         
             if (regexCategUpdate.test(nameCateg) && regexToken.test(token)) {
                 await UpdateCateg(data, params.idCateg)

@@ -6,6 +6,8 @@ import TabletSet from "./component/tabletSetting"
 import DesktopSet from "./component/desktopSetting"
 import { GetUser } from "@/api/user"
 import jwt_decode from "jsonwebtoken"
+import ChangeSetting from "./component/changeSetting"
+
 
 export default function Settings() {
     const [token, setToken] = useState('')
@@ -163,7 +165,7 @@ export default function Settings() {
     }  
 
     async function getDesign() {
-        await getSet(2)
+        await getSet()
         .then((res)=>{
             setNameForum(res.data.setting.nameForum)
             setGeneralTextColor(res.data.setting.generalTextColor)
@@ -221,6 +223,7 @@ export default function Settings() {
                                 <a href="/admin/settings"><li>Paramètre Forum</li></a>
                             </ul>
                         </nav>
+                        <ChangeSetting  backgroundColorThird={backgroundColorThird} backgroundColorGeneralButton={backgroundColorGeneralButton} textColorGeneralButton={textColorDeleteButton} backgroundColorZoneText={backgroundColorZoneText} textColor={generalTextColor} backgroundColorDeleteButton={backgroundColorDeleteButton} backgroundColorUpdateButton={backgroundColorUpdateButton} textColorUpdateButton={textColorUpdateButton} textColorDeleteButton={textColorDeleteButton}/>
                         <form action="" onSubmit={handleSetting} method="put" encType="multipart/form-data">
                             <MobileSet setIconeDeletePost={setIconeDeletePost} setIconeLikeFalse={setIconeLikeFalse} setIconeLikeTrue={setIconeLikeTrue} setIconeUpdatePost={setIconeUpdatePost} setNameForum={setNameForum} setGeneralTextColor={setGeneralTextColor} setNavbarTextColor={setNavbarTextColor} setNameForumColor={setNameForumColor} setTextColorGeneralButton={setTextColorGeneralButton} setTextColorDeleteButton={setTextColorDeleteButton} setTextColorUpdateButton={setTextColorUpdateButton} setTextColorCardMember={setTextColorCardMember} setBackgroundColorNavbar={setBackgroundColorNavbar} setBackgroundColorFirst={setBackgroundColorFirst} setBackgroundColorSecond={setBackgroundColorSecond} setBackgroundColorCadre={setBackgroundColorCadre} setBackgroundColorCategorie={setBackgroundColorCategorie} setBackgroundColorButtonBurger={setBackgroundColorButtonBurger} setBackgroundColorGeneralButton={setBackgroundColorGeneralButton} setBackgroundColorDeleteButton={setBackgroundColorDeleteButton} setBackgroundColorUpdateButton={setBackgroundColorUpdateButton} setBackgroundColorCardMember={setBackgroundColorCardMember} setBackgroundColorZoneText={setBackgroundColorZoneText} setBackgroundColorThird={setBackgroundColorThird} setBaliseIMGLikeFalse={setBaliseIMGLikeFalse} setBaliseIMGLikeTrue={setBaliseIMGLikeTrue} setBaliseIMGDeletePost={setBaliseIMGDeletePost} setBaliseIMGUpdatePost={setBaliseIMGUpdatePost} errorMessage={errorMessage} succes={succes} baliseIMGDeletePost={baliseIMGDeletePost} baliseIMGLikeFalse={baliseIMGLikeFalse} baliseIMGLikeTrue={baliseIMGLikeTrue} baliseIMGUpdatePost={baliseIMGUpdatePost} generalTextColor={generalTextColor} navbarTextColor={navbarTextColor} nameForumColor={nameForumColor} textColorGeneralButton={textColorGeneralButton} textColorDeleteButton={textColorDeleteButton} textColorUpdateButton={textColorUpdateButton} textColorCardMember={textColorCardMember} backgroundColorNavbar={backgroundColorNavbar} backgroundColorFirst={backgroundColorFirst} backgroundColorSecond={backgroundColorSecond} backgroundColorCadre={backgroundColorCadre} backgroundColorCategorie={backgroundColorCategorie} backgroundColorButtonBurger={backgroundColorButtonBurger} backgroundColorGeneralButton={backgroundColorGeneralButton} backgroundColorDeleteButton={backgroundColorDeleteButton} backgroundColorUpdateButton={backgroundColorUpdateButton} backgroundColorCardMember={backgroundColorCardMember} backgroundColorZoneText={backgroundColorZoneText} backgroundColorThird={backgroundColorThird} iconeLikeFalse={iconeLikeFalse} iconeLikeTrue={iconeLikeTrue} iconeDeletePost={iconeDeletePost} iconeUpdatePost={iconeUpdatePost} nameForum={nameForum}  />
                         </form>

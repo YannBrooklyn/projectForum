@@ -3,10 +3,50 @@ const path = require('path')
 const dotenv = require('dotenv').config({path: "././.env"});
 const regexTextTopic = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]){8,255}$/;
 const regexId = /^([0-9]){1,}$/
+const regexImage = /^([a-zA-Z_.\d\s-]{1,25})\.(?:jpg|gif|png|bmp)$/
+
 
 module.exports = {
+
+    emptyImageCom: async (req, res)=>{
+        const idCom = req.params.idCom
+        if (!regexId.test(idCom) || idCom == "0") {
+            return res.status(400).json({message: "Une erreur dans l'Id Com."})
+        }
+        const result = await models.coms.findOne({ where: {id: idCom}})
+
+        if (result) {
+             result.update({
+                imageComs: null
+            })
+            .then((result)=>{
+                return res.status(200).json({message: "Image retirer"})
+
+            })
+            .catch(()=>{
+                return res.status(500).json({message: "Une erreur est suvenu."})
+            })
+        } else {
+            return res.status(400).json({message:"Commentaire non trouvée"})
+        }
+    },
+
     newCom: async (req, res)=> {
         const {text, idUser, idCategorie, idTopic, idTheme} = req.body
+        console.log(req.file)
+        function imagesComs() {
+            if (req.file) {
+                if (regexImage.test(req.file.originalname)){
+
+                    return req.file.filename
+                } else {
+                    return res.status(400).json({message: "Caractères invalide"})
+                }
+            } else {
+                return null
+            }
+        }
+        console.log(imagesComs())
         if (!regexTextTopic.test(text) || idUser == "0" || idCategorie == "0" || idTopic == "0" || idTheme == "0" || !regexId.test(idUser) || !regexId.test(idCategorie) || !regexId.test(idTopic)) {
             return res.status(400).json({message: "Merci de mettre des caractères valide."})
         }
@@ -19,7 +59,8 @@ module.exports = {
                 idUser: idUser,
                 idCategorie: idCategorie,
                 idPost: idTopic,
-                idTheme: idTheme
+                idTheme: idTheme,
+                imageComs: imagesComs()
             })
             if (newCom) {
                 return res.status(200).json({ message: text + ' a bien été crée', com: newCom})
@@ -81,7 +122,7 @@ module.exports = {
     },
 
     getCom: async (req, res) => {
-        
+        console.log("REGARDE MOI MON GARS")
         const idCom = req.params.idCom
         console.log("eeeellfv", idCom)
         if (!regexId.test(idCom) || idCom == "0") {
@@ -103,8 +144,10 @@ module.exports = {
         })
        .then((com)=> {
         console.log(com)
+        console.log("SALUUUUUUUUUUUUTTTTT")
         return res.status(200).json({com: com})
        }).catch((error) =>{
+        console.log('ERREUR REGARDE')
         console.log("error",error)
         return res.status(400).json({message:"Commentaire pas trouvé"})
        }) 
@@ -113,6 +156,21 @@ module.exports = {
     putCom: async (req, res) =>{
         const idCom = req.params.idCom
         const text = req.body.text
+        console.log("burger", req.file)
+        
+        console.log("sandwich", regexImage.test(req.file.originalname))
+        function imagesComs() {
+            if (req.file) {
+                if (regexImage.test(req.file.originalname)) {
+
+                    return req.file.filename
+                } else {
+                    return res.status(400).json({message: "Image contenant caractères invalide"})
+                }
+            } else {
+                return null
+            }
+        }
 
         if (!regexId.test(idCom) || idCom == "0" || !regexTextTopic.test(text)) {
             return res.status(400).json({message: "Merci de mettre des caractères valide."})
@@ -129,7 +187,8 @@ module.exports = {
         if (verifyCom){
             console.log("loooook", verifyCom)
             await verifyCom.update({
-                textComs: text ? text : verifyCom.textComs
+                textComs: text ? text : verifyCom.textComs,
+                imageComs: imagesComs() !== null ? imagesComs() : verifyCom.imageComs
             })
             .then((result)=>{
                 return res.status(200).json({message: "Commentaire modifié", result})
