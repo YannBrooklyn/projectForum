@@ -70,15 +70,7 @@ export default function Accueil() {
 
             <br/>
             <section style={{width:"90%", display:"flex", flexDirection:"column", gap:"5vh"}}>
-
                 <Theme textColor={generalTextColor} backgroundColor={backgroundColorCategorie} backgroundColorSecond={backgroundColorSecond}/>
-
-                {/* <div className="flex justify-center text-white border-black" style={{height:"8vh", backgroundColor:backgroundColorSecond, width:"100%", borderStyle:"solid", borderWidth:"0.2vh"}}>
-                    <h4>Les Categorie</h4>
-                </div>
-
-                    
-                <Categorie textColor={generalTextColor} backgroundColor={backgroundColorCategorie}/> */}
             </section>
         </main>
         )

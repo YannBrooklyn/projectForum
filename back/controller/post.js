@@ -160,7 +160,7 @@ module.exports = {
         const {title, text} = req.body
         console.log(req.file)
         function imagePost() {
-            if (req.file.originalname) {
+            if (req.file) {
                 if (regexImage.test(req.file.originalname)) {
 
                     return req.file.filename

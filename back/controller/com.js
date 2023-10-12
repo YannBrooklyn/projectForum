@@ -33,7 +33,7 @@ module.exports = {
 
     newCom: async (req, res)=> {
         const {text, idUser, idCategorie, idTopic, idTheme} = req.body
-        console.log(req.file)
+        
         function imagesComs() {
             if (req.file) {
                 if (regexImage.test(req.file.originalname)){
@@ -46,11 +46,9 @@ module.exports = {
                 return null
             }
         }
-        console.log(imagesComs())
         if (!regexTextTopic.test(text) || idUser == "0" || idCategorie == "0" || idTopic == "0" || idTheme == "0" || !regexId.test(idUser) || !regexId.test(idCategorie) || !regexId.test(idTopic)) {
             return res.status(400).json({message: "Merci de mettre des caractères valide."})
         }
-        console.log(req.body)
         if (text == "" || text == " " || text === null || text === undefined) {
             return res.status(400).json({message: "Merci de bien vouloir remplir les champs !"})
         } else {

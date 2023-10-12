@@ -1,7 +1,5 @@
 const models = require('../models');
 let jwt = require('jsonwebtoken')
-const path = require('path')
-const dotenv = require('dotenv').config({path: "././.env"});
 
 
 module.exports = {
@@ -83,7 +81,6 @@ module.exports = {
                 } else {
 
                     const idUser = jwt.decode(token)
-                    console.log(idUser)
                     await models.users.findOne({where: {id: idUser.id}})
                     .then(()=>{
                         nex()

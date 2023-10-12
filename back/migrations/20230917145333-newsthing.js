@@ -17,7 +17,6 @@ module.exports = {
       },
 
       generalTextColor: {
-
         type: Sequelize.STRING,
         allowNull: false
       },
@@ -26,6 +25,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
+      
 
       nameForumColor : {
         type: Sequelize.STRING,

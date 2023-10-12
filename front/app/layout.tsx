@@ -13,9 +13,13 @@ import { getSet } from '@/api/setting'
 import jwt_decode from "jsonwebtoken"
 
 
+
+
 export const metadata = {
     title: "Forum"
 }
+
+
 
 
 export default function RootLayout({

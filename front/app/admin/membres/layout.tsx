@@ -1,7 +1,7 @@
 import './mobile.css'
 
-export const metada = {
-    title: "Titre Actualité"
+export const metadata = {
+    title: "Forum"
 }
 
 export default function RootLayout({

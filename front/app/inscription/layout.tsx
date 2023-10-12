@@ -1,7 +1,7 @@
 import './mobile.css'
 
 export const metadata = {
-    title: "Accueil : Actualité"
+    title: "Forum"
 }
 
 

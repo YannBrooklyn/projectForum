@@ -280,13 +280,10 @@ module.exports = {
         }
         
         if (!regexID.test(statsUser)) {
-            console.log('wssssssss')
             return res.status(400).json({message: "Erreur de paramètre"})
         }
 
         if (statsUser != 1 && statsUser != 0) {
-            console.log('rrrrrrrr958')
-            console.log(statsUser)
             return res.status(400).json({message: "Erreur de paramètre"})
         }
 

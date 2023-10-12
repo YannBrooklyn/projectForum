@@ -889,13 +889,13 @@ export function Commentaire(prop: any) {
                                 <div key={index} className="flex w-full">
                                     <CardCommentaire  backgroundColorCardMember={prop.backgroundColorCardMember} textColor={prop.textColor}  user={coms.user.pseudo} test={coms.idUser}/>
                                     
-                                    <div className="flex flex-col gap-12">
+                                    <div className="flex flex-col gap-12 ">
 
-                                        <p style={{color:prop.textColor}} className="w-7/12">{coms.textComs}</p>
+                                        <p style={{color:prop.textColor}}>{coms.textComs}</p>
                                         {coms.imageComs ? 
                                         (
 
-                                            <img src={"/imagepost/" + coms.imageComs} className="max-h-48 max-w-48"  alt="" />
+                                            <img src={"/imagepost/" + coms.imageComs} className="max-h-48 max-w-48"  alt="Image Commentaire" />
                                         ): null}
                                     </div>
                     
@@ -970,24 +970,21 @@ export function TextareaCom(prop: any) {
             imagesComs: imagesComs
         }
 
-        
-        console.log(data)
         RegexImageComs() === false || !regexToken.test(token) || !text || text === null || text === undefined || !regexTextTopic.test(text) || !regexID.test(idUser) || !regexID.test(idCategorie) || !regexID.test(idTopic) ?
         setErrorMessage('Merci de mettre des caractères valide, minimum 8 caractères.') :
         await newCom(data) 
         .then((data)=> {
-            console.log(data.data)
             if (data !== undefined) {
 
                 if (data.status === 200) {
+                    setSucces('Votre message a été envoyer avec succès')
+                    setErrorMessage('')
                     
                     setTimeout(() => {
                         setSucces('')
                         setText('')
                         router.push('/' + data.data.com.idCategorie + "/topic/" + data.data.com.idPost) 
                     }, 1500);
-                    setSucces('Votre message a été envoyer avec succès')
-                    setErrorMessage('')
                 } else {
                     return Promise.reject(data)
                 }

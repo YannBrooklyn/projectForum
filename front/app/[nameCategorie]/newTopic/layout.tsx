@@ -1,7 +1,7 @@
 import './mobile.css'
 
 export const metadata = {
-    title: "Nouveau Topic"
+    title: "Forum"
 }
 
 export default function RootLayout({
