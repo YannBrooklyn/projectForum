@@ -70,7 +70,7 @@ export function ContentRegister(prop: any){
 
     return (
         <form className="w-full flex flex-col items-center justify-center" action="" onSubmit={handleReg} method="post">
-            <div className="flex flex-col justify-center items-center border border-black  h-96 w-96 rounded-3xl  sm:w-10/12 md:w-7/12 lg:w-6/12 xl:w-6/12 2xl:w-7/12" style={{gap:"2vh",  backgroundColor:prop.backgroundColorThird}}>
+            <div className="flex flex-col justify-center items-center border border-black  h-auto w-96 rounded-3xl  sm:w-10/12 md:w-7/12 lg:w-6/12 xl:w-6/12 2xl:w-7/12" style={{gap:"2vh",  backgroundColor:prop.backgroundColorThird}}>
                 <h3 style={{color:"green"}}>{succes}</h3>
                 <h3 style={{color:"red"}}>{errorMessage}</h3>
                 <h3 style={{color:prop.textColor}}>Pseudonyme</h3>
