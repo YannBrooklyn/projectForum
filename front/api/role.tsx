@@ -2,7 +2,6 @@
 import axios from 'axios'
 
 export const newRole = async (data: any) => {
-    console.log(data)
     return await axios ({
         method:"post",
         url: `${process.env.CXCD}/role/new/role`,
@@ -10,7 +9,6 @@ export const newRole = async (data: any) => {
     })
     .then((result)=>{ 
         return result
-        
     })
     .catch((error)=>{ 
         return error
@@ -40,7 +38,6 @@ export const UpdateRole = async (data: any, params: any) =>{
         if (result.status === 200) {
             return result
         }
-
     })
     .catch((error)=>{ 
         return error

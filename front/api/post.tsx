@@ -1,8 +1,4 @@
-'use client'
 import axios from 'axios'
-import { useParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import env from "dotenv"
 
 
 
@@ -12,7 +8,6 @@ export const getAllPost = async () => {
     return await axios({
         method: 'get',
         url: `${process.env.CXCD}/post/get/all/post`,
-        
     })
     .then((result)=> {
         
@@ -97,9 +92,7 @@ export const delPost = async (data: any, paramsTopic: any) => {
         data: data
     })
     .then((result)=> {
-        
-            return result
-        
+        return result
     })
     .catch((error)=>{
         return error
@@ -117,10 +110,7 @@ export const putPost = async (data: any, paramsTopic: any)=>{
         }
     })
     .then((result)=>{
-        
         return result
-        
-        
     })
     .catch((error)=>{
         return error

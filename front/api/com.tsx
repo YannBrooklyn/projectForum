@@ -1,6 +1,5 @@
 import axios from 'axios'
 
-
 export const newCom = async (data: any) => {
     return await axios ({
         method: 'post',
@@ -53,17 +52,14 @@ export const getCom = async (paramsCom: any) =>{
        
     })
     .then((result)=> {
-        console.log(result.data.com.imageComs)
         return result.data.com
     })
     .catch((error)=> {
-        console.log(error)
         return error
     })
 }
 
 export const putComs = async (data: any, paramsCom: any) => {
-    console.log(data)
     return await axios ({
         method: 'put',
         url: `${process.env.CXCD}/com/put/com/${paramsCom}`,
@@ -73,9 +69,7 @@ export const putComs = async (data: any, paramsCom: any) => {
         }
     })
     .then((result)=>{
-        
-            return result
-        
+        return result
     })
     .catch((error)=>{
         return error
@@ -89,9 +83,7 @@ export const delComs = async (data: any, paramsCom: any) =>{
         data: data
     })
     .then((result)=>{
-        
         return result
-        
     })
     .catch((error)=> {
         return error

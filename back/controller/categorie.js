@@ -1,5 +1,4 @@
 const models = require('../models');
-let jwt = require('jsonwebtoken')
 const regexNameCategorie = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]){6,45}$/; 
 const regexId = /^([0-9]){1,}$/
 

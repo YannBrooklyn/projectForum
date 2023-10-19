@@ -1,7 +1,4 @@
 const models = require('../models');
-let jwt = require('jsonwebtoken')
-const path = require('path')
-const dotenv = require('dotenv').config({path: "././.env"});
 const regexId = /^([0-9]){1,}$/
 
 
@@ -22,11 +19,10 @@ module.exports = {
             await models.likescoms.destroy({
                 where: {idUser: idUser, idPost: idPost, idCategorie: idCategorie, idCom: idCom, idTheme: idTheme}
             })
-            .then((result)=>{
+            .then(()=>{
                 return res.status(200).json({message: "like retirer"})
             })
-            .catch((error)=>{
-                console.log(error)
+            .catch(()=>{
                 return res.status(500).json({message: "error"})
             })
         } 
@@ -38,11 +34,10 @@ module.exports = {
                 idCom: idCom,
                 idTheme: idTheme
             })
-            .then((result)=>{
+            .then(()=>{
                 return res.status(200).json({message: "Liker"})
             })
-            .catch((error)=>{
-                console.log(error)
+            .catch(()=>{
                 return res.status(500).json({message: "erreur"})
             })
         }
@@ -61,8 +56,7 @@ module.exports = {
         .then((result)=>{
             return res.status(200).json({message: result})
         })
-        .catch((error)=>{
-            console.log(error)
+        .catch(()=>{
             return res.status(500).json({message: "erreur"})
         })
     },
@@ -72,15 +66,13 @@ module.exports = {
         if (!regexId.test(idUser) ||idUser == "0") {
             return res.status(400).json({message: "Erreur dans l'IdUser"})
         }
-        console.log(req.body)
         await models.likescoms.findAll({
             where: {idUser: idUser}
         })
         .then((result)=>{
             return res.status(200).json({message: result})
         })
-        .catch((error)=>{
-            console.log(error)
+        .catch(()=>{
             return res.status(500).json({message: "erreur"})
         })
     }

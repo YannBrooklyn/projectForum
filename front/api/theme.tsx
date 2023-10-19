@@ -7,11 +7,9 @@ export const newTheme = async (data: any)=>{
         data: data
     })
     .then((result)=>{
-        console.log(result)
         return result
     })
     .catch((error)=>{
-        console.log(error)
         return error
     })
 }
@@ -23,11 +21,9 @@ export const getAllTheme = async ()=>{
         
     })
     .then((result)=>{
-        console.log(result)
         return result.data.themes
     })
     .catch((error)=>{
-        console.log(error)
         return error
     })
 }
@@ -40,35 +36,29 @@ export const UpdateTheme = async (data: any, params: any) =>{
     })
     .then((res)=> {
        
-        console.log(res)
         return res
         
     })
     .catch((error)=>{
-        console.log(error)
         return error
     })
 }
 
 export const DeleteTheme = async (data: any, params: any)=>{
-    console.log("wsssssssssssssssshhhh", params)
     return await axios ({
         method:"delete",
         url: `${process.env.CXCD}/theme/delete/theme/${params}`,
         data: data
     })
     .then((res)=>{
-        console.log(res)
         return res
     })
     .catch((error)=>{
-        console.log(error)
         return error
     })
 }
 
 export const getTheme = async (params: any)=>{
-    console.log("wsssssssssssssssshhhh", params)
     return await axios ({
         method:"get",
         url: `${process.env.CXCD}/theme/get/theme/${params}`
@@ -77,7 +67,6 @@ export const getTheme = async (params: any)=>{
         return res
     })
     .catch((error)=>{
-        console.log(error)
         return error
     })
 }

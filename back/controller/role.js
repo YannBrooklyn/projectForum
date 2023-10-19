@@ -2,7 +2,6 @@
 
 
 const models = require('../models');
-let jwt = require('jsonwebtoken')
 
 const regexNameRole = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]){4,50}$/; 
 const regexColorRole = /^#+([a-zA-Z0-9]){6,6}$/
@@ -13,9 +12,7 @@ const regexID = /^([0-9]){1,}$/
 
 module.exports = {
     newRole: async (req, res) => {
-        console.log("coucou")
         const {name, color} = req.body
-        console.log(req.body)
 
         if (!regexColorRole.test(color) || !regexNameRole.test(name)) {
             return res.status(400).json({message: "Merci de mettre des caractères valide."})
@@ -47,12 +44,11 @@ module.exports = {
         }
     },
     allRole: async (req, res) => {
-        console.log("baki")
         await models.roles.findAll()
         .then((result)=>{
             return res.status(200).json({roles: result})
         })
-        .catch((error)=>{
+        .catch(()=>{
             return res.status(500).json({message: "Une erreur est survenu"})
         })
     },

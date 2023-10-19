@@ -1,6 +1,4 @@
 const models = require('../models');
-let jwt = require('jsonwebtoken');
-const theme = require('../models/theme');
 const regexTheme = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]){6,45}$/; 
 const regexId = /^([0-9]){1,}$/
 
@@ -33,7 +31,7 @@ module.exports = {
         .then((theme)=> {
             return res.status(200).json({themes: theme})
         })
-        .catch((error)=> {
+        .catch(()=> {
             return res.status(400).json({message:"Categorie non trouvé "})
         })
     },

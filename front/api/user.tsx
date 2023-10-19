@@ -1,5 +1,3 @@
-
-import { cookies } from "next/dist/client/components/headers";
 import axios from "axios";
 import jwt_decode from "jsonwebtoken"
 
@@ -77,7 +75,7 @@ export const LogUser = async (data: any) => {
             }
 
             await StatutUser(data, idUser.id)
-            .then((res)=>{
+            .then(()=>{
                 
                 const token = result.data.token
                 token !== null ?
@@ -99,8 +97,6 @@ export const GetUser = async (paramsUser: any) => {
         url: `${process.env.CXCD}/user/get/user/${paramsUser}`
     })
     .then((result)=>{
-        
-        
         return result.data
     })
     .catch((error)=>{
@@ -114,7 +110,6 @@ export const GetAllUser = async ()=>{
         url: `${process.env.CXCD}/user/get/all`
     })
     .then((result)=>{
-       
         return result.data.users
     })
     .catch((error)=>{
@@ -213,6 +208,5 @@ export const DeleteUser = async (data: any, params: any) =>{
     })
     .catch((error)=>{
         return error
-        
     })
 }

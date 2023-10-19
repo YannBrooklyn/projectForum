@@ -175,10 +175,7 @@ module.exports = {
                         models.coms.findOne({where: {id: idCom}})
                         .then((resultComs)=>{
                             if (resultComs.idUser == idUser.id || result.idRole == 1 || result.idRole == 2) {
-                                console.log("iii",resultComs.dataValues.idUser)
-                                console.log("iiipp",resultComs)
-                                console.log("iiipp",resultComs.idUser)
-                                console.log("iiioo",result.idRole)
+                               
                                 nex()
                             } else {
                                 return res.status(400).json({message: "Vous n'avez pas la permission de modifier ou supprimer ce message."})

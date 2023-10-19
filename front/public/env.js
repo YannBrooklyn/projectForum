@@ -1,3 +1,3 @@
 window.env = {
-    "MYAPI": "http://localhost:3105"
+    "MYAPI": "http://localhost:3939"
 }

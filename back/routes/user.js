@@ -1,8 +1,6 @@
 let express = require ('express');
 const userController = require('../controller/user.js')
 const router = express.Router()
-// const middleware = require ('../middleware/middleware.js')
-let jwt = require('jsonwebtoken')
 const multer = require('multer');
 const middleware = require('../middleware/middleware.js');
 const upload = multer({ dest: '../front/public/avatar/' })

@@ -1,9 +1,5 @@
 const models = require('../models');
-let jwt = require('jsonwebtoken')
-const path = require('path')
-const dotenv = require('dotenv').config({path: "././.env"});
 const regexColor = /^#+([a-zA-Z0-9]){6,6}$/
-const regexId = /^([0-9]){1,}$/
 const regexImage = /^([-a-zA-Z_.\d\s]{1,255})\.(?:jpg|gif|png|bmp)$/
 const regexNameForum = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]){5,25}$/; 
 
@@ -94,8 +90,6 @@ module.exports = {
                 return null
             }
         }
-        console.log("aaaaaaaaaaadee5555", iconeDeletePost())
-        console.log("mario", req.files)
 
 
         const setting = await models.settings.findOne({where: {activate: 1}})
@@ -125,8 +119,7 @@ module.exports = {
             iconeDeletePost: iconeDeletePost() !== " " && iconeDeletePost() !== "" && iconeDeletePost() !== null && iconeDeletePost() !== undefined ? iconeDeletePost() : setting.iconeDeletePost,
             iconeUpdatePost: iconeUpdatePost() !== " " && iconeUpdatePost() !== "" && iconeUpdatePost() !== null && iconeUpdatePost() !== undefined ? iconeUpdatePost() : setting.iconeUpdatePost
         })
-        .then((test)=>{
-            console.log(test)
+        .then(()=>{
            return  res.status(200).json({message: "Paramètre forum modifié avec succès."})
         })
         .catch(()=>{
@@ -147,7 +140,7 @@ module.exports = {
         changeSet.update({
             activate: 1
         })
-        .then((result)=>{
+        .then(()=>{
             return  res.status(200).json({message: "Paramètre forum modifié avec succès."})
         })
         .catch(()=>{
@@ -207,11 +200,11 @@ module.exports = {
 
     getSet: async (req, res)=> {
         
-        const result = await models.settings.findOne({where: {activate: 1}})
+        await models.settings.findOne({where: {activate: 1}})
         .then((result)=>{
             return res.status(200).json({setting: result})
         })
-        .catch((error)=>{
+        .catch(()=>{
             return res.status(400).json({message: "Une erreur est survenu"})
         })
     }

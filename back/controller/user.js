@@ -2,10 +2,6 @@
 let models = require('../models')
 let bcryptjs = require('bcryptjs')
 let jwt = require('jsonwebtoken')
-const path = require('path')
-const dotenv = require('dotenv').config({path: "././.env"});
-const multer = require('multer')
-const upload = multer({ dest: 'static/images/' })
 const regexPseudo = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]){5,15}$/; 
 const regexPassword = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]){6,255}$/; 
 const regexEmail = /^([-._A-Za-z\d]){3,100}@([a-zA-Z]){3,15}\.([a-zA-Z]){2,15}$/
@@ -245,13 +241,11 @@ module.exports = {
         if (!regexID.test(idUser)) {
             return res.status(400).json({message: "Une erreur est survenu"})
         }
-        console.log(req.file)
         if (req.file) {
             if (!regexImage.test(req.file.originalname)) {
                 return res.status(400).json({message: "Merci de mettre des caractères valide pour l'avatar, nous acceptons seulement les images jpg png gif bmp."})
             }
         }
-        console.log(req.file)
         function avatar() {
             if (req.file) {
                 return req.file.filename
@@ -294,8 +288,7 @@ module.exports = {
         .then (()=> {
             return res.status(200).json({ message: "Status modifié avec succès"})
         })
-        .catch((error)=>{
-            console.log(error)
+        .catch(()=>{
             return res.status(500).json({message: "Une erreur est survenu."})
         })
     },
@@ -331,8 +324,6 @@ module.exports = {
                 return res.status(400).json({message: "Merci de mettre des caractères valide pour la bannière, nous acceptons seulement les images jpg png gif bmp."})
             }
         }
-
-        console.log(req.file)
         function banniere() {
             if (req.file) {
                 return req.file.filename
@@ -347,14 +338,12 @@ module.exports = {
         .then (()=> {
             return res.status(200).json({ message: "Bannière modifié avec succès"})
         })
-        .catch((error)=>{
-            console.log(error)
+        .catch(()=>{
             return res.status(500).json({message: "Une erreur est survenu."})
         })
     },
 
     delUser : async (req, res) => {
-        console.log('oooo')
         const idUser = req.params.iduser;
 
         if (idUser === undefined || idUser === null || idUser == "" || idUser == " "){
@@ -371,7 +360,7 @@ module.exports = {
                 attributes:['id'], where:{id: idUser}
             }).then(()=> {
                 return res.status(200).json({ message: 'utilisateur supprimé'})
-            }).catch((error) => {
+            }).catch(() => {
                 return res.status(500).json({message: "erreur lors de la suppression "})
             })
         }
@@ -411,14 +400,13 @@ module.exports = {
         })
         .then((user) => {
             return res.status(200).json({user: user})
-        }).catch((error)=> {
+        }).catch(()=> {
             return res.status(500).json({message: "utilisateur pas trouvé "})
         }) 
 
     },
 
     allUser : async (req, res) => {
-        console.log('wsssshhh')
         await models.users.findAll({
             include: [{
                 model: models.posts,
@@ -449,92 +437,3 @@ module.exports = {
         })
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// module.exports = {
-
-//     logUser : (req, res) => {
-//         let email = req.body.email
-//         let password = req.body.password
-//         let pseudo = req.body.pseudo
-
-//         asyncLib.waterfall([
-//             (done) => {
-//                 models.users.findOne({
-//                     attributes: ['email'],
-//                     where: { email: email}
-//                 })
-//                 .then((userFound) => {
-//                     done(null, userFound);
-//                 })
-//                 .catch((error) => {
-//                     console.log(error)
-//                     return res.status(500).json({'error': 'unable to verify user'});
-//                 });
-//             },
-//             (userFound, done) => {
-//                 if(!userFound) {
-//                     console.log("yo")
-//                     done(null, userFound);
-                    
-//                     asyncLib.waterfall([
-
-//                         (done) => {
-//                             models.users.create({
-//                                 pseudo : pseudo,
-//                                 email : email,
-//                                 password : password,
-//                             })
-//                             .then((newUser) => {
-//                                 done(newUser);
-//                             })
-//                             .catch((error) => {
-//                                 console.log('error', error)
-//                                 return res.status(500).json({'error': 'on peut pas rajouter'});
-//                             });
-                            
-//                         }
-//                     ], (newUser) => {
-//                         if(newUser) {
-//                             return res.status(201).json({
-//                                 'idUser' : newUser.idUser,
-//                                 'message': "c'est bon",
-//                             });
-//                         } else {
-//                             console.log("salut yo")
-//                             return res.status(500).json({'error': 'non'})
-//                         }
-//                     })
-//                 } else {
-//                     return res.status(409).json({ 'error': 'email already exists'})
-//                 }
-//             }
-//         ])
-//     } 
-// }

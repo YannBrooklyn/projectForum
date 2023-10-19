@@ -15,9 +15,7 @@ import jwt_decode from "jsonwebtoken"
 
 
 
-export const metadata = {
-    title: "Forum"
-}
+
 
 
 
@@ -33,13 +31,10 @@ export default function RootLayout({
 
     const [nameForum, setNameForum] = useState('')
     const [generalTextColor, setGeneralTextColor] = useState('')
-
     const [nameForumColor, setNameForumColor] = useState('')
-    
     const [backgroundColorNavbar, setBackgroundColorNavbar] = useState('')
     const [backgroundColorFirst, setBackgroundColorFirst] = useState('')
     const [backgroundColorCadre, setBackgroundColorCadre] = useState('')
-
     const [usersOnline, setUsersOnline] = useState([]) 
 
 
@@ -121,10 +116,10 @@ export default function RootLayout({
 
                     {children}
 
-                    <footer className='border-solid border border-black w-full h-64'>
+                    <footer className='border-solid border border-black w-full h-auto'>
                         <div className='flex flex-col justify-center items-center justify-around h-full w-full'>
                             <h2 className='w-full h-11 text-center bold text-3xl' style={{backgroundColor:backgroundColorCadre, color:nameForumColor}}>{nameForum}</h2>
-                            <div className='flex flex-col gap-4'>
+                            <div className='flex flex-col gap-4 w-full h-full'>
                                 <Stats textColor={generalTextColor}/>
                                 <h4 className='text-center font-bold text-md' style={{color:generalTextColor}}>Qui est en ligne ?</h4>
                                 <WhosOnline textColor={generalTextColor} users={usersOnline}/>
@@ -141,7 +136,7 @@ export default function RootLayout({
 
 export function WhosOnline(prop: any) {
     return (
-        <div className='flex gap-1'>
+        <div className='flex gap-1 justify-center h-full w-full'>
             {prop.users.map((user: any, index: any)=>{
                 if (user.online === true) {
                     return (
@@ -193,7 +188,7 @@ export function Stats (prop: any) {
     },[])
 
     return(
-        <div className='flex flex-row gap-4' style={{color:prop.textColor}}>
+        <div className='flex flex-row justify-center gap-4 w-full h-full ' style={{color:prop.textColor}}>
             <h4>Nombres d'utilisateur : {users.length}</h4>
             <h4>Total de sujet : {posts.length}</h4>
             <h4>Total de message : {coms.length + posts.length}</h4>
@@ -227,7 +222,7 @@ export function Roles (prop: any) {
     },[])
 
     return(
-        <div  className='flex flex-row w-full gap-2'>
+        <div className='flex flex-row justify-center flex-wrap w-full gap-2 h-full'>
             <h4 className='font-bold' style={{color:prop.textColor}}>Roles :</h4>
             {roles.length !== 0 || roles !== undefined ?
                 roles.map((role, index)=>{

@@ -1,7 +1,4 @@
 const models = require('../models');
-let jwt = require('jsonwebtoken')
-const path = require('path')
-const dotenv = require('dotenv').config({path: "././.env"});
 const regexTitleTopic = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]){8,45}$/; 
 const regexTextTopic = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]){8,255}$/;
 const regexId = /^([0-9]){1,}$/
@@ -70,10 +67,8 @@ module.exports = {
             }]
         })
        .then((actualite)=> {
-        console.log(idTopic)
         return res.status(200).json({post: actualite})
-       }).catch((error) =>{
-        console.log(error)
+       }).catch(() =>{
         return res.status(400).json({message:"Post pas trouvé"})
        }) 
     },
@@ -90,7 +85,7 @@ module.exports = {
             result.update({
                 imagePost: null
             })
-            .then((result)=>{
+            .then(()=>{
                 return res.status(200).json({message: "Image retirer"})
 
             })
@@ -127,7 +122,7 @@ module.exports = {
             return res.status(200).json({post: actualite})
 
         })
-        .catch((error) =>{
+        .catch(() =>{
             return res.status(500).json({message:"Topic pas trouvé "})
         })
     },
@@ -144,10 +139,10 @@ module.exports = {
             await models.posts.destroy({
                 where: {id: idTopic}
             })
-            .then((result)=> {
+            .then(()=> {
                 return res.status(200).json({message: "post supprimer"})
             })
-            .catch((error)=>{
+            .catch(()=>{
                 return res.status(500).json({message: 'Une erreur est survenu'})
             })
         } else {
@@ -172,7 +167,6 @@ module.exports = {
             }
         }
 
-        console.log(imagePost())
 
         if (idTopic == "0" || !regexId.test(idTopic) || !regexTextTopic.test(text) || !regexTitleTopic.test(title)) {
             return res.status(400).json({message: "Merci de mettre des caractères valide."})
@@ -189,11 +183,10 @@ module.exports = {
                 textPost: text ? text : verifyPost.textPost,
                 imagePost: imagePost() !== null ? imagePost() : verifyPost.imagePost
             })
-            .then((result)=>{
+            .then(()=>{
                 return res.status(200).json({message: "Topic modifié avec succès"})
             })
-            .catch((error)=>{
-                console.log("back idTopic",title + text)
+            .catch(()=>{
                 return res.status(500).json({message: "erreur Topic non modifié"})
             })
         }

@@ -1,9 +1,7 @@
 const models = require ('../models');
-const path = require('path')
-const dotenv = require('dotenv').config({path: "././.env"});
 const regexTextTopic = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]){8,255}$/;
 const regexId = /^([0-9]){1,}$/
-const regexImage = /^([a-zA-Z_.\d\s-]{1,25})\.(?:jpg|gif|png|bmp)$/
+const regexImage = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]{1,25})\.(?:jpg|gif|png|bmp|jpeg)$/
 
 
 module.exports = {
@@ -19,7 +17,7 @@ module.exports = {
              result.update({
                 imageComs: null
             })
-            .then((result)=>{
+            .then(()=>{
                 return res.status(200).json({message: "Image retirer"})
 
             })
@@ -154,9 +152,7 @@ module.exports = {
     putCom: async (req, res) =>{
         const idCom = req.params.idCom
         const text = req.body.text
-        console.log("burger", req.file)
         
-        console.log("sandwich", regexImage.test(req.file.originalname))
         function imagesComs() {
             if (req.file) {
                 if (regexImage.test(req.file.originalname)) {
@@ -191,7 +187,7 @@ module.exports = {
             .then((result)=>{
                 return res.status(200).json({message: "Commentaire modifié", result})
             })
-            .catch((error)=>{
+            .catch(()=>{
                 return res.status(500).json({message: "erreur commentaire non modifié"})
             })
         } else {

@@ -21,5 +21,4 @@ app.use('/role', require('./routes/role.js'))
 app.use('/setting', require('./routes/setting.js'))
 app.use('/theme', require('./routes/theme.js'))
 
-
-app.listen(process.env.PORT);
+app.listen(process.env.PORT)

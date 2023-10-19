@@ -1,13 +1,12 @@
-import { memo, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ButtonModals } from "./page";
 import { delPost, emptyImagePost, getPost, putPost } from "@/api/post";
 import { useParams, useRouter } from "next/navigation";
 import jwt_decode from 'jsonwebtoken'
 import { delComs, emptyImageCom, getAllCom, getCom, newCom, putComs } from "@/api/com";
-import { GetAllUser, GetUser } from "@/api/user";
-import { actionLikePost, getAllLikePost, getLikePost } from "@/api/likepost";
-import { actionLikeCom, AllLikeCom, getLikeCom } from "@/api/likecom";
-import { button } from "@material-tailwind/react";
+import { GetUser } from "@/api/user";
+import { actionLikePost, getLikePost } from "@/api/likepost";
+import { actionLikeCom, getLikeCom } from "@/api/likecom";
 import { getSet } from "@/api/setting";
 import { getCateg } from "@/api/categ";
 
@@ -18,9 +17,7 @@ import { getCateg } from "@/api/categ";
 export function ModalEditer(prop: any){
     const [title, setTitle] = useState('')
     const [text, setText] = useState('')
-    const paramsCategorie = useParams().nameCategorie
     const paramsTopic = useParams().idTopic
-    const router = useRouter();
     const [succes, setSucces] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
     const [token, setToken] = useState('')
@@ -300,11 +297,7 @@ export function OpenModalSupprimer() {
 }
 
 
-
-
 export function CardMember(params: any) {
-    console.log(params)
-    const idUser = params.idUser
     const [post, setPost] = useState({})
     const [userInfo, setUserInfo] = useState([])
     const [likeComInfo, setLikeComInfo] = useState(0)
@@ -368,7 +361,6 @@ export function CardCommentaire(user: any) {
     const [roleInfo, setRoleInfo] = useState([])
     const [comsInfo, setComsInfo] = useState([])
     const [postsInfo, setPostsInfo] = useState([])
-    const [avatar, setAvatar] = useState('')
     const getUserInfo = () =>{
         GetUser(user.test)
         .then((res)=> {
@@ -391,8 +383,7 @@ export function CardCommentaire(user: any) {
         getUserInfo()
     }, [])
     return (
-        <div className="flex flex-col items-center justify-center border-black border h-64 w-2/5 sm:h-64 sm:w-48 md:h-64 md:w-48 lg:w-48 xl:w-48 2xl:w-48" style={{backgroundColor:user.backgroundColorCardMember}}>
-            
+        <div className="flex flex-col items-center justify-center border-black border h-auto w-2/5 sm:w-48 md:w-48 lg:w-48 xl:w-48 2xl:w-48" style={{backgroundColor:user.backgroundColorCardMember}}>
             <img style={{height:"50%", width:'80%'}} src={"/avatar/" + test} alt="Photo de Profil"/>
             <h4 style={{color: roleInfo.colorRole, fontWeight:"bold"}}>{user.user}</h4>
             <h4 style={{color:user.textColor}}>{roleInfo.nameRole}</h4>
@@ -418,7 +409,7 @@ export function ModalEditerCom(paramsCom : any){
 
     const [imagesComs, setImagesComs] = useState({})
     const regexID = /^([0-9]){1,}$/
-    const regexImage = /^([a-zA-Z_.\d\s-]{1,25})\.(?:jpg|gif|png|bmp)$/
+    const regexImage = /^([A-Za-zËÊÈéèêëÄÂÀÃãàâäÎÏÌîïìÜÛÙùüûÖÔÒôöõòÿ!_.'?\d\s-]{1,25})\.(?:jpg|gif|png|bmp|jpeg)$/
 
     function RegexImageComs() {
         if(!imagesComs.name) {
@@ -859,9 +850,6 @@ export function Commentaire(prop: any) {
     const [imageCom, setImageCom] = useState('')
     const [com, setCom] = useState([])
     const paramsTopic = useParams().idTopic
-    const [paramsUser, setParamsUser] = useState('')
-    const paramsCategorie = useParams().nameCategorie
-    const [users, setUsers] = useState([])
     const getTheCom = () =>{
         getAllCom()
         .then((res:any)=>{
@@ -881,7 +869,7 @@ export function Commentaire(prop: any) {
                     if (paramsTopic == coms.idPost) {
                         return (
                             
-                            <div key={index} className="flex flex-col justify-center items-center gap-4 border border-black h-96">
+                            <div key={index} className="flex flex-col justify-center items-center gap-4 border border-black h-auto">
                                 <ButtonModalsCom iconeDeletePost={prop.iconeDeletePost} iconeUpdatePost={prop.iconeUpdatePost} setPropImage={setImageCom} imageComs={coms.imageComs} setProp={setIdCom} idCom={coms.id}/>
                                 <ModalEditerCom backgroundColorButtonGeneral={prop.backgroundColorButtonGeneral} textColorGeneralButton={prop.textColorGeneralButton} backgroundColorThird={prop.backgroundColorThird} backgroundColorUpdateButton={prop.backgroundColorUpdateButton} backgroundColorZoneText={prop.backgroundColorZoneText} textColor={prop.textColor} textColorUpdateButton={prop.textColorUpdateButton} imagesComs={imageCom} paramsCom={idCom}/>
                                 
